@@ -3,10 +3,19 @@
 
 <head>
     <title>TV</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="lib/p5.min.js"></script>
+    <script src="src/main.js"></script>
 </head>
 
 <body>
-    <p>Hello. This is an empty tv. No channels <strong>yet</strong>.</p>
+    <div class="tv-wrapper">
+        <div class="tv-inner">
+            <img src="assets/tv.svg" class="tv" id="tv-image" />
+            <div id="tv-sketch"></div>
+            <p class="tv-text">Hello. Current channel <strong>perlin noise</strong>.</p>
+        </div>
+    </div>
 </body>
 
 </html>

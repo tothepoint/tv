@@ -1,0 +1,36 @@
+body {
+  background-color: #f9f9f9;
+}
+
+#tv-sketch {
+  position: absolute;
+  top: 55%;
+  left: 14%;
+  max-width: 80%;
+  height: 41%;
+  /* background-color: aqua; */
+}
+
+.tv-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+img.tv {
+  display: block;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.tv-inner {
+  position: relative;
+}
+
+.tv-text {
+  position: absolute;
+  /* left: 15%; */
+  bottom: -50px;
+  font-family: "Courier New", Courier, monospace;
+  /* background-color: aliceblue; */
+}
