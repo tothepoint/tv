@@ -3,20 +3,71 @@
 
 <head>
     <title>TV</title>
-    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="style.css?v=3">
     <script src="lib/p5.min.js"></script>
-    <script src="src/sketches/perlin-line.js"></script>
-    <script src="src/sketches/perlin-line-2.js"></script>
-    <script src="src/random-utils.js"></script>
-    <script src="src/main.js"></script>
+    <script src="src/sketches/perlin-line.js?v=3"></script>
+    <script src="src/sketches/perlin-line-2.js?v=3"></script>
+    <script src="src/sketches/time-seeded.js?v=3"></script>
+    <script src="src/sketches/empty-channel.js?v=3"></script>
+    <script src="src/random-utils.js?v=3"></script>
+    <script src="src/main.js?v=3"></script>
 </head>
 
 <body>
-    <div class="tv-wrapper">
-        <div class="tv-inner">
-            <img src="assets/tv.svg" class="tv" id="tv-image" />
-            <div id="tv-sketch"></div>
-            <p class="tv-text">Hello. Current channel <strong>perlin noise</strong>.</p>
+    <div class="tv-and-remote">
+        <div class="tv-wrapper">
+            <div class="tv-inner">
+                <img src="assets/tv.svg" class="tv" id="tv-image" />
+                <div id="tv-sketch"></div>
+                <!-- <p class="tv-text">Hello. Current channel <strong>perlin noise</strong>.</p> -->
+            </div>
+        </div>
+        <div class="tv-remote-control">
+            <div class="btn-row">
+                <button id="action-power-on-off" class="btn btn-remote btn-round btn-power-on-off"></button>
+                <div class="spacer"></div>
+                <button id="action-mute" class="btn btn-remote btn-round btn-mute"></button>
+            </div>
+            <div class="spacer-row"></div>
+            <div class="tv-remote-control-digits">
+                <div class="btn-row">
+                    <button id="action-1" class="btn btn-remote">1</button>
+                    <button id="action-2" class="btn btn-remote">2</button>
+                    <button id="action-3" class="btn btn-remote">3</button>
+                </div>
+                <div class="btn-row">
+                    <button id="action-4" class="btn btn-remote">4</button>
+                    <button id="action-5" class="btn btn-remote">5</button>
+                    <button id="action-6" class="btn btn-remote">6</button>
+                </div>
+                <div class="btn-row">
+                    <button id="action-7" class="btn btn-remote">7</button>
+                    <button id="action-8" class="btn btn-remote">8</button>
+                    <button id="action-9" class="btn btn-remote">9</button>
+                </div>
+                <div class="btn-row">
+                    <button id="action-toggle-channel-enter-mode" class="btn btn-remote">-/--</button>
+                    <button id="action-0" class="btn btn-remote">0</button>
+                    <button class="btn btn-remote">&lt;&gt;</button>
+                </div>
+            </div>
+            <div class="spacer-row"></div>
+            <div class="volume-channel-row">
+                <div class="btn-segmented">
+                    <button id="action-volume-increase" class="btn-segment volume-plus">+</button>
+                    <div class="btn-segment-text">VOL</div>
+                    <button id="action-volume-decrease" class="btn-segment volume-minus">-</button>
+                </div>
+                <div class="spacer"></div>
+                <div class="btn-segmented">
+                    <button id="action-channel-next" class="btn-segment channel-plus">+</button>
+                    <div class="btn-segment-text">CH</div>
+                    <button id="action-channel-previous" class="btn-segment channel-minus">-</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

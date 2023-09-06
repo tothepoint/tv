@@ -2,6 +2,11 @@ body {
   background-color: #f9f9f9;
 }
 
+button {
+  background-color: transparent;
+  border: 0;
+}
+
 #tv-sketch {
   position: absolute;
   top: 55%;
@@ -33,4 +38,87 @@ img.tv {
   bottom: -50px;
   font-family: "Courier New", Courier, monospace;
   /* background-color: aliceblue; */
+}
+
+.tv-and-remote {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+.tv-remote-control {
+  background: black;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.tv-remote-control .spacer-row {
+  min-height: 44px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.tv-remote-control .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  font-family: cursive;
+}
+
+.tv-remote-control .btn:hover {
+  cursor: pointer;
+}
+
+.tv-remote-control .btn.btn-round {
+  border-radius: 44px;
+}
+
+.tv-remote-control .btn-segmented {
+  /* background-color: #6ecaff; */
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.tv-remote-control .btn-segment {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: cursive;
+  font-size: 1.4rem;
+}
+
+.tv-remote-control .btn-segment-text {
+  text-align: center;
+}
+
+.tv-remote-control .volume-channel-row {
+  display: flex;
+}
+
+.tv-remote-control-digits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tv-remote-control .btn-power-on-off {
+  background-color: red;
+}
+
+.tv-remote-control .btn-mute {
+  background-color: gray;
+}
+
+.tv-remote-control .spacer {
+  flex: 1;
+  min-width: 44px;
 }

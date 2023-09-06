@@ -41,7 +41,6 @@ let perlinLine2Sketch = function (p) {
             p.rect(x, y, tileWidth);
 
             const worldX = /*col +*/ noiseOffset;
-            console.log('worldX', worldX);
             // let seed = (worldX & 0xFFFFF) << 16 | (worldY & 0xFFFFF);
             let seed = (worldX & 0xFFFFF) << 16;
             let charsToConsider = 200; // More chars -> better the mix.
