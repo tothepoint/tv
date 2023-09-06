@@ -1,5 +1,12 @@
 let emptyChannelSketch = function (p) {
-    let tileWidth = 8;
+    let mapWidth = 40;
+    let mapHeight;
+    let tileWidth;
+
+    const recalcMapSize = () => {
+        tileWidth = p.width / mapWidth;
+        mapHeight = Math.floor(p.height / tileWidth);
+    };
 
     const calcCanvasSize = () => {
         const tvImage = document.getElementById('tv-image');
@@ -14,13 +21,11 @@ let emptyChannelSketch = function (p) {
         p.createCanvas(canvasSize.width, canvasSize.height);
         p.background("#750909");
         p.frameRate(12);
+        recalcMapSize();
     }
 
     p.draw = function () {
         p.background("#750909");
-
-        const mapWidth = Math.floor(p.width / tileWidth);
-        const mapHeight = Math.floor(p.height / tileWidth);
 
         for (let col = 0; col < mapWidth; col++) {
             for (let row = 0; row < mapHeight; row++) {
@@ -38,5 +43,6 @@ let emptyChannelSketch = function (p) {
     p.windowResized = () => {
         const canvasSize = calcCanvasSize();
         p.resizeCanvas(canvasSize.width, canvasSize.height);
+        recalcMapSize();
     };
 };

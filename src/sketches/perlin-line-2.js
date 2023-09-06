@@ -1,9 +1,15 @@
 let perlinLine2Sketch = function (p) {
-    let tileWidth = 8;
+    let mapWidth = 40;
+    let mapHeight;
+    let tileWidth;
     let offsetX = 0.0;
     // let noiseStep = 0.015;
     let noiseStep = 1;
 
+    const recalcMapSize = () => {
+        tileWidth = p.width / mapWidth;
+        mapHeight = Math.floor(p.height / tileWidth);
+    };
 
     const calcCanvasSize = () => {
         const tvImage = document.getElementById('tv-image');
@@ -22,13 +28,11 @@ let perlinLine2Sketch = function (p) {
         p.createCanvas(canvasSize.width, canvasSize.height);
         p.background("#750909");
         //p.frameRate(1);
+        recalcMapSize();
     }
 
     p.draw = function () {
         p.background("#750909");
-
-        const mapWidth = Math.floor(p.width / tileWidth);
-        const mapHeight = Math.floor(p.height / tileWidth);
 
         p.fill('yellow');
 
@@ -63,5 +67,6 @@ let perlinLine2Sketch = function (p) {
     p.windowResized = () => {
         const canvasSize = calcCanvasSize();
         p.resizeCanvas(canvasSize.width, canvasSize.height);
+        recalcMapSize();
     };
 };
