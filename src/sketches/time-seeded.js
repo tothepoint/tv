@@ -31,7 +31,7 @@ let timeSeededSketch = function (p) {
         let response;
         if (useServerTime) {
             // response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-            response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC');
+            response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { mode: 'no-cors' });
         } else {
             // Fallback to the client's time instead of server's in case of an error.
             return { datetime: new Date().getTime() };
