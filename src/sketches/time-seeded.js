@@ -30,7 +30,8 @@ let timeSeededSketch = function (p) {
         let useServerTime = true;
         let response;
         if (useServerTime) {
-            response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
+            // response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
+            response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC');
         } else {
             // Fallback to the client's time instead of server's in case of an error.
             return { datetime: new Date().getTime() };
@@ -68,7 +69,7 @@ let timeSeededSketch = function (p) {
                 const requestDurationMs = requestEndTime - requestStartTime;
                 // Calculate client time offset to server time.
                 // Always add that offset to compensate.
-                const nowServer = new Date(new Date(data.datetime).getTime() + requestDurationMs / 2);
+                const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime() + requestDurationMs / 2);
                 const nowClient = new Date();
 
                 offsetFromServerTimeMs = nowClient.getTime() - nowServer.getTime();
