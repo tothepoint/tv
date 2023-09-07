@@ -11,6 +11,7 @@ let timeSeededSketch = function (p) {
     let timerId;
     let initialized = false;
     let offsetFromServerTimeMs = 0;
+    let syncedTime;
 
     const recalcMapSize = () => {
         tileWidth = p.width / mapWidth;
@@ -67,7 +68,7 @@ let timeSeededSketch = function (p) {
                 const requestDurationMs = requestEndTime - requestStartTime;
                 // Calculate client time offset to server time.
                 // Always add that offset to compensate.
-                const nowServer = new Date(new Date(data.datetime).getTime() + requestDurationMs);
+                const nowServer = new Date(new Date(data.datetime).getTime() + requestDurationMs / 2);
                 const nowClient = new Date();
 
                 offsetFromServerTimeMs = nowClient.getTime() - nowServer.getTime();
@@ -76,9 +77,17 @@ let timeSeededSketch = function (p) {
                 if (timerId) {
                     clearInterval(timerId);
                 }
+
+                const syncedTimestamp = nowClient.getTime() + offsetFromServerTimeMs;
+                syncedTime = new Date(syncedTimestamp);
+
+                offsetX = (syncedTimestamp) / 10000;
+
                 timerId = setInterval(() => {
-                    offsetX = (new Date().getTime() + offsetFromServerTimeMs) / 10000;
-                }, 100);
+                    const syncedTimestamp = new Date().getTime() + offsetFromServerTimeMs;
+                    syncedTime = new Date(syncedTimestamp);
+                    offsetX = syncedTimestamp / 10000;
+                }, 50);
             })
             .catch(err => {
                 console.log(`Got an error fetching time: ${err}`);
@@ -142,6 +151,14 @@ let timeSeededSketch = function (p) {
         }
         p.textSize(12);
         p.text(`LIVE`, p.width - 35, 15);
+
+        p.fill('white');
+        p.textSize(12);
+        p.textStyle(p.NORMAL);
+
+        const t = syncedTime;
+        const syncedTimeText = `${t.getUTCHours()}:${t.getUTCMinutes()}:${t.getUTCSeconds()}:${t.getUTCMilliseconds()}`;
+        p.text(syncedTimeText, 10, 15);
     };
 
     p.windowResized = () => {
