@@ -77,7 +77,11 @@ let timeSeededSketch = function (p) {
                 const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime());
                 const nowClient = new Date();
 
-                offsetFromServerTimeMs = nowClient.getTime() - nowServer.getTime();
+                const nowClientTimestamp = nowClient.getTime();
+                const nowServerTimestamp = nowServer.getTime();
+                offsetFromServerTimeMs = nowClientTimestamp < nowServerTimestamp
+                    ? nowServerTimestamp - nowClientTimestamp
+                    : nowClientTimestamp - nowServerTimestamp;
 
                 initialized = true;
                 if (timerId) {
