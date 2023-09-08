@@ -12,6 +12,8 @@ let timeSeededSketch = function (p) {
     let initialized = false;
     let offsetFromServerTimeMs = 0;
     let syncedTime;
+    let freezeAfterFirstFrame = false;
+    let firstFrameDrawn = false;
 
     const recalcMapSize = () => {
         tileWidth = p.width / mapWidth;
@@ -59,6 +61,12 @@ let timeSeededSketch = function (p) {
     // }
 
     p.setup = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const freeze = urlParams.get('freeze');
+        if (freeze === 'true') {
+            freezeAfterFirstFrame = true;
+        }
+
         const canvasSize = calcCanvasSize();
         p.createCanvas(canvasSize.width, canvasSize.height);
         p.background("#750909");
@@ -106,6 +114,10 @@ let timeSeededSketch = function (p) {
 
     p.draw = function () {
         if (!initialized) {
+            return;
+        }
+
+        if (freezeAfterFirstFrame && firstFrameDrawn) {
             return;
         }
 
@@ -169,6 +181,8 @@ let timeSeededSketch = function (p) {
         const t = syncedTime;
         const syncedTimeText = `${t.getUTCHours()}:${t.getUTCMinutes()}:${t.getUTCSeconds()}:${t.getUTCMilliseconds()}`;
         p.text(syncedTimeText, 10, 15);
+
+        firstFrameDrawn = true;
     };
 
     p.windowResized = () => {
