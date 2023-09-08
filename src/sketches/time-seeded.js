@@ -60,6 +60,12 @@ let timeSeededSketch = function (p) {
     //     p.remove(); // remove whole sketch on mouse press
     // }
 
+    const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
+        const offsetFromServerTimeMs = serverTimestamp - clientTimestamp;
+
+        return offsetFromServerTimeMs;
+    };
+
     p.setup = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const freeze = urlParams.get('freeze');
@@ -87,9 +93,7 @@ let timeSeededSketch = function (p) {
 
                 const nowClientTimestamp = nowClient.getTime();
                 const nowServerTimestamp = nowServer.getTime();
-                offsetFromServerTimeMs = nowClientTimestamp < nowServerTimestamp
-                    ? nowServerTimestamp - nowClientTimestamp
-                    : nowClientTimestamp - nowServerTimestamp;
+                offsetFromServerTimeMs = getClientTimeOffsetFromServer(nowClientTimestamp, nowServerTimestamp);
 
                 initialized = true;
                 if (timerId) {
