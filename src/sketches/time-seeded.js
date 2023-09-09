@@ -14,6 +14,7 @@ let timeSeededSketch = function (p) {
     let syncedTime;
     let freezeAfterFirstFrame = false;
     let firstFrameDrawn = false;
+    let timeSyncError = false;
 
     const recalcMapSize = () => {
         tileWidth = p.width / mapWidth;
@@ -32,18 +33,18 @@ let timeSeededSketch = function (p) {
         let useServerTime = true;
         let response;
         if (useServerTime) {
-            // response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-
             // Do a call to "prime" the communication.
-            response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { mode: 'no-cors' });
+            response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
 
-            response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { mode: 'no-cors' });
+            response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
         } else {
             // Fallback to the client's time instead of server's in case of an error.
             return { datetime: new Date().getTime() };
         }
 
         if (!response.ok) {
+            timeSyncError = true;
+            console.log('Time sync error, server response:', response);
             // const message = `Error: ${response.status}`;
             // throw new Error(message);
 
@@ -87,8 +88,7 @@ let timeSeededSketch = function (p) {
                 const requestDurationMs = requestEndTime - requestStartTime;
                 // Calculate client time offset to server time.
                 // Always add that offset to compensate.
-                // const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime() + requestDurationMs / 2);
-                const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime());
+                const nowServer = new Date(new Date(data.unixtime).getTime());
                 const nowClient = new Date();
 
                 const nowClientTimestamp = nowClient.getTime();
@@ -210,6 +210,13 @@ let timeSeededSketch = function (p) {
         const t = syncedTime;
         const syncedTimeText = `${t.getUTCHours()}:${t.getUTCMinutes()}:${t.getUTCSeconds()}:${t.getUTCMilliseconds()}`;
         p.text(syncedTimeText, 10, 15);
+
+        if (timeSyncError) {
+            p.fill('white');
+            p.textSize(12);
+            p.textStyle(p.NORMAL);
+            p.text('E', 3, 15);
+        }
 
         firstFrameDrawn = true;
     };
