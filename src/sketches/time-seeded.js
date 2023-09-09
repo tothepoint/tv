@@ -105,6 +105,31 @@ let timeSeededSketch = function (p) {
 
                 offsetX = (syncedTimestamp) / 10000;
 
+                const rawServerTime = data.datetime || data.dateTime;
+                const rawServerTimeDate = new Date(rawServerTime);
+
+                if (freezeAfterFirstFrame) {
+                    // DEBUG PURPOSES.
+                    const debugInfo = {
+                        requestStartTime,
+                        requestEndTime,
+                        requestDurationMs,
+                        offsetFromServerTimeMs,
+                        nowServer,
+                        nowClient,
+                        offsetX,
+                        syncedTime,
+                        rawServerTime,
+                        rawServerTimeDate
+                    };
+                    const debugDiv = document.createElement('div');
+                    debugDiv.style.position = 'absolute';
+                    debugDiv.style.top = 0;
+                    debugDiv.style.left = 0;
+                    debugDiv.innerText = JSON.stringify(debugInfo).split(',').join(',\n').replace('{', '').replace('}', '');
+                    document.body.appendChild(debugDiv);
+                }
+
                 timerId = setInterval(() => {
                     const syncedTimestamp = new Date().getTime() + offsetFromServerTimeMs;
                     syncedTime = new Date(syncedTimestamp);
