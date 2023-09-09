@@ -88,7 +88,7 @@ let timeSeededSketch = function (p) {
                 const requestDurationMs = requestEndTime - requestStartTime;
                 // Calculate client time offset to server time.
                 // Always add that offset to compensate.
-                const nowServer = new Date(new Date(data.unixtime).getTime());
+                const nowServer = new Date(new Date(data.datetime).getTime());
                 const nowClient = new Date();
 
                 const nowClientTimestamp = nowClient.getTime();
