@@ -81,8 +81,6 @@ let timeSeededSketch = function (p) {
         recalcMapSize();
 
         const requestStartTime = new Date();
-        const nowClient = new Date();
-
         loadUTCTimeBasedSeed()
             .then((data) => {
                 const requestEndTime = new Date();
@@ -91,6 +89,7 @@ let timeSeededSketch = function (p) {
                 // Always add that offset to compensate.
                 // const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime() + requestDurationMs / 2);
                 const nowServer = new Date(new Date(data.datetime || data.dateTime).getTime());
+                const nowClient = new Date();
 
                 const nowClientTimestamp = nowClient.getTime();
                 const nowServerTimestamp = nowServer.getTime();
