@@ -11,20 +11,12 @@ let perlinLine2Sketch = function (p) {
         mapHeight = Math.floor(p.height / tileWidth);
     };
 
-    const calcCanvasSize = () => {
-        const tvImage = document.getElementById('tv-image');
-        const canvasWidth = Math.floor(tvImage.clientWidth * 0.72);
-        const canvasHeight = Math.floor(tvImage.clientHeight * 0.33);
-
-        return { width: canvasWidth, height: canvasHeight };
-    };
-
     // p.mousePressed = function mousePressed() {
     //     p.remove(); // remove whole sketch on mouse press
     // }
 
     p.setup = function () {
-        const canvasSize = calcCanvasSize();
+        const canvasSize = calcTvCanvasSize();
         p.createCanvas(canvasSize.width, canvasSize.height);
         p.background("#750909");
         //p.frameRate(1);
@@ -65,7 +57,7 @@ let perlinLine2Sketch = function (p) {
     };
 
     p.windowResized = () => {
-        const canvasSize = calcCanvasSize();
+        const canvasSize = calcTvCanvasSize();
         p.resizeCanvas(canvasSize.width, canvasSize.height);
         recalcMapSize();
     };
