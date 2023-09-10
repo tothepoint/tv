@@ -1,5 +1,5 @@
 let perlinLineSketch = function (p) {
-    let mapWidth = 40;
+    let mapWidth = 64;
     let mapHeight;
     let tileWidth;
     let offsetX = 0.0;

@@ -9,8 +9,8 @@ button {
 
 #tv-sketch {
   position: absolute;
-  top: 55%;
-  left: 14%;
+  top: 49.5%;
+  left: 7.5%;
   max-width: 80%;
   height: 41%;
   /* background-color: aqua; */
@@ -26,6 +26,17 @@ img.tv {
   display: block;
   max-width: 90vw;
   max-height: 90vh;
+}
+
+canvas {
+  -webkit-mask-image: url(assets/tv-screen-mask.svg);
+  mask-image: url(assets/tv-screen-mask.svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
 }
 
 .tv-inner {

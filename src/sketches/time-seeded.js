@@ -1,5 +1,5 @@
 let timeSeededSketch = function (p) {
-    let mapWidth = 40;
+    let mapWidth = 64;
     let mapHeight;
     let tileWidth;
     let offsetX = 0.0;
@@ -17,12 +17,12 @@ let timeSeededSketch = function (p) {
     let timeSyncError = false;
 
     const recalcMapSize = () => {
-        tileWidth = p.width / mapWidth;
-        mapHeight = Math.floor(p.height / tileWidth);
+        tileWidth = Math.ceil(p.width / mapWidth);
+        mapHeight = Math.ceil(p.height / tileWidth);
     };
 
     const loadUTCTimeBasedSeed = async () => {
-        let useServerTime = true;
+        let useServerTime = false;
         let response;
         if (useServerTime) {
             // Do a call to "prime" the communication.
@@ -94,8 +94,9 @@ let timeSeededSketch = function (p) {
 
                 const syncedTimestamp = nowClient.getTime() + offsetFromServerTimeMs;
                 syncedTime = new Date(syncedTimestamp);
+                const TIME_TO_OFFSET_FACTOR = 0.0001;
 
-                offsetX = (syncedTimestamp) / 10000;
+                offsetX = (syncedTimestamp) * TIME_TO_OFFSET_FACTOR;
 
                 const rawServerTime = data.datetime || data.dateTime;
                 const rawServerTimeDate = new Date(rawServerTime);
@@ -125,7 +126,7 @@ let timeSeededSketch = function (p) {
                 timerId = setInterval(() => {
                     const syncedTimestamp = new Date().getTime() + offsetFromServerTimeMs;
                     syncedTime = new Date(syncedTimestamp);
-                    offsetX = syncedTimestamp / 10000;
+                    offsetX = syncedTimestamp * TIME_TO_OFFSET_FACTOR;
                 }, 50);
             })
             .catch(err => {
@@ -142,15 +143,22 @@ let timeSeededSketch = function (p) {
             return;
         }
 
-        p.background("#750909");
+        // p.background("#750909");
+        const skyBlue = '#89b8e4';
+        p.background(skyBlue);
 
         let noiseOffset = offsetX;
         for (let col = 0; col < mapWidth; col++) {
-            const x = col * tileWidth;
+            const x = Math.floor(col * tileWidth);
             const worldY = p.noise(noiseOffset);
             const y = Math.floor(worldY * tileWidth * mapHeight);
+            p.noStroke();
             p.fill('#C2B280');
             p.rect(x, y, tileWidth);
+
+            const heightToBottom = mapHeight - y;
+            p.fill('#C2B280');
+            p.rect(x, y + tileWidth, tileWidth, p.height - y);
 
             let worldX = Math.floor(noiseOffset * 100);
             let seed = worldX;
@@ -188,20 +196,20 @@ let timeSeededSketch = function (p) {
 
         p.textStyle(p.BOLD);
         if (p.second() % 2 == 0) {
-            p.fill('white');
+            p.fill('black');
         } else {
             p.fill('red');
         }
         p.textSize(12);
-        p.text(`LIVE`, p.width - 35, 15);
+        p.text(`LIVE`, p.width - tileWidth * 12, tileWidth * 6);
 
-        p.fill('white');
+        p.fill('black');
         p.textSize(12);
         p.textStyle(p.NORMAL);
 
         const t = syncedTime;
-        const syncedTimeText = `${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}:${t.getMilliseconds()}`;
-        p.text(syncedTimeText, 10, 15);
+        const syncedTimeText = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}:${t.getSeconds().toString().padStart(2, '0')}:${t.getMilliseconds().toString().padStart(2, '0')}`;
+        p.text(syncedTimeText, tileWidth * 8, tileWidth * 6);
 
         if (timeSyncError) {
             p.fill('white');
