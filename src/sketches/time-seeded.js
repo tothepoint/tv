@@ -200,7 +200,7 @@ let timeSeededSketch = function (p) {
         p.textStyle(p.NORMAL);
 
         const t = syncedTime;
-        const syncedTimeText = `${t.getUTCHours()}:${t.getUTCMinutes()}:${t.getUTCSeconds()}:${t.getUTCMilliseconds()}`;
+        const syncedTimeText = `${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}:${t.getMilliseconds()}`;
         p.text(syncedTimeText, 10, 15);
 
         if (timeSyncError) {
