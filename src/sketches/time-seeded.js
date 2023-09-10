@@ -22,7 +22,7 @@ let timeSeededSketch = function (p) {
     };
 
     const loadUTCTimeBasedSeed = async () => {
-        let useServerTime = false;
+        let useServerTime = true;
         let response;
         if (useServerTime) {
             // Do a call to "prime" the communication.
