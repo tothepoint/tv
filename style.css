@@ -16,6 +16,14 @@ button {
   /* background-color: aqua; */
 }
 
+#tv-glass-image {
+  position: absolute;
+  width: 85.6%;
+  top: 50%;
+  left: 7.5%;
+  z-index: 2;
+}
+
 .tv-wrapper {
   display: flex;
   align-items: center;
