@@ -1,10 +1,22 @@
+html,
 body {
-  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: #444d8938;
+}
+
+body {
+  font-size: 16px;
+  overflow: auto;
 }
 
 button {
   background-color: transparent;
   border: 0;
+  font-size: 1.2rem;
 }
 
 #tv-sketch {
@@ -28,12 +40,13 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
 }
 
 img.tv {
   display: block;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 96vw;
+  max-height: 96vh;
 }
 
 canvas {
@@ -60,19 +73,23 @@ canvas {
 }
 
 .tv-and-remote {
+  margin-top: 0.8rem;
   display: flex;
   justify-content: center;
-  gap: 32px;
+  gap: 1rem;
+  align-items: center;
 }
 
 .tv-remote-control {
   background: black;
   padding: 16px;
   border-radius: 16px;
+  font-family: cursive;
+  align-self: flex-end;
 }
 
 .tv-remote-control .spacer-row {
-  min-height: 44px;
+  min-height: 3.125rem;
 }
 
 .btn-row {
@@ -84,8 +101,8 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 3.125rem;
+  min-height: 3.125rem;
   background: #f9f9f9;
   border-radius: 4px;
   font-family: cursive;

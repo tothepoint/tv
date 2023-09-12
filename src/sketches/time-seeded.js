@@ -4,7 +4,7 @@ let timeSeededSketch = function (p) {
     let tileWidth;
     let offsetX = 0.0;
     // let noiseStep = 0.015;
-    let noiseStep = 0.01;
+    let noiseStep = 0.005;
     let initialTime;
     let initialTimeUTCMs;
     let seed;
@@ -22,7 +22,7 @@ let timeSeededSketch = function (p) {
     };
 
     const loadUTCTimeBasedSeed = async () => {
-        let useServerTime = true;
+        let useServerTime = false; // DEBUG PURPOSES.
         let response;
         if (useServerTime) {
             // Do a call to "prime" the communication.
@@ -69,7 +69,7 @@ let timeSeededSketch = function (p) {
         const canvasSize = calcTvCanvasSize();
         p.createCanvas(canvasSize.width, canvasSize.height);
         p.background("#750909");
-        //p.frameRate(1);
+        //p.frameRate(30);
         p.noiseSeed(100);
         recalcMapSize();
 
@@ -148,6 +148,7 @@ let timeSeededSketch = function (p) {
         p.background(skyBlue);
 
         let noiseOffset = offsetX;
+        let worldX = Math.floor(noiseOffset * 100);
         for (let col = 0; col < mapWidth; col++) {
             const x = Math.floor(col * tileWidth);
             const worldY = p.noise(noiseOffset);
@@ -160,8 +161,10 @@ let timeSeededSketch = function (p) {
             p.fill('#C2B280');
             p.rect(x, y + tileWidth, tileWidth, p.height - y);
 
-            let worldX = Math.floor(noiseOffset * 100);
+            // let worldX = Math.floor(noiseOffset * 100);
+            // let worldX = Math.floor(noiseOffset * 100);
             let seed = worldX;
+            // console.log('seed', seed);
 
             let charsToConsider = 200; // More chars -> better the mix.
             const noiseSeed = xmur3(seed + String.fromCharCode(worldX % charsToConsider))();
@@ -187,6 +190,7 @@ let timeSeededSketch = function (p) {
                 }
             }
 
+            worldX += 1;
             noiseOffset += noiseStep;
         }
 
@@ -200,11 +204,11 @@ let timeSeededSketch = function (p) {
         } else {
             p.fill('red');
         }
-        p.textSize(12);
-        p.text(`LIVE`, p.width - tileWidth * 12, tileWidth * 6);
+        p.textSize(18);
+        p.text(`LIVE`, p.width - tileWidth * 16, tileWidth * 6);
 
         p.fill('black');
-        p.textSize(12);
+        p.textSize(18);
         p.textStyle(p.NORMAL);
 
         const t = syncedTime;
@@ -212,10 +216,10 @@ let timeSeededSketch = function (p) {
         p.text(syncedTimeText, tileWidth * 8, tileWidth * 6);
 
         if (timeSyncError) {
-            p.fill('white');
-            p.textSize(12);
+            p.fill('black');
+            p.textSize(18);
             p.textStyle(p.NORMAL);
-            p.text('E', 3, 15);
+            p.text('E', tileWidth * 6, tileWidth * 6);
         }
 
         firstFrameDrawn = true;
