@@ -1,5 +1,6 @@
 window.addEventListener('load', function () {
     const sketches = [
+        cakesSketch,
         timeSeededSketch,
         perlinLineSketch,
         perlinLine2Sketch
