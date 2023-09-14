@@ -1,78 +1,17 @@
 window.addEventListener('load', function () {
-    const sketches = [
-        cakesSketch,
-        timeSeededSketch,
-        perlinLineSketch,
-        perlinLine2Sketch
+    const channelDefinitions = [
+        { channelId: 1, sketchFn: cakesSketch },
+        { channelId: 2, sketchFn: timeSeededSketch },
+        { channelId: 3, sketchFn: perlinLineSketch },
+        { channelId: 4, sketchFn: perlinLine2Sketch }
     ];
 
-    let currentSketchIdx = -1;
-    let currentSketchFn;
-    let currentSketch;
-
-    const nextSketch = () => {
-        removeCurrentSketch();
-
-        currentSketchIdx++;
-        if (currentSketchIdx >= sketches.length) {
-            runEmptyChannelSketch();
-            return;
-        }
-        currentSketchFn = sketches[currentSketchIdx];
-        currentSketch = new p5(currentSketchFn, 'tv-sketch');
-    };
-
-    const prevSketch = () => {
-        removeCurrentSketch();
-
-        currentSketchIdx--;
-        if (currentSketchIdx < 0) {
-            currentSketchIdx = 0;
-        }
-        if (currentSketchIdx >= sketches.length) {
-            runEmptyChannelSketch();
-            return;
-        }
-        currentSketchFn = sketches[currentSketchIdx];
-        currentSketch = new p5(currentSketchFn, 'tv-sketch');
-    };
-
-    const removeCurrentSketch = () => {
-        if (currentSketch) {
-            currentSketch.remove();
-        }
-    };
-
-    const runSketchByIdx = (sketchIdx) => {
-        removeCurrentSketch();
-
-        currentSketchFn = sketches[sketchIdx];
-        currentSketch = new p5(currentSketchFn, 'tv-sketch');
-    };
-
-    const runEmptyChannelSketch = () => {
-        removeCurrentSketch();
-
-        currentSketchFn = emptyChannelSketch;
-        currentSketch = new p5(currentSketchFn, 'tv-sketch');
-    };
-
-    document.querySelector('.tv-inner').addEventListener('click', (event => {
-        nextSketch();
-    }));
-
-    nextSketch();
+    const tv = new TV({
+        screenElementId: 'tv-sketch'
+    });
 
     document.getElementById('action-power-on-off').addEventListener('click', () => {
-        if (currentSketch) {
-            currentSketch.remove();
-            currentSketch = undefined;
-        } else if (currentSketchIdx > -1) {
-            currentSketchFn = sketches[currentSketchIdx];
-            currentSketch = new p5(currentSketchFn, 'tv-sketch');
-        } else {
-            nextSketch();
-        }
+        tv.toggleTurnOn();
     });
 
     const tvRemoteDigitButtonDefs = [
@@ -90,19 +29,21 @@ window.addEventListener('load', function () {
 
     for (const digitButtonDef of tvRemoteDigitButtonDefs) {
         document.getElementById(digitButtonDef.id).addEventListener('click', () => {
-            const buttonSketchId = digitButtonDef.digit - 1;
-            if (sketches[buttonSketchId]) {
-                runSketchByIdx(buttonSketchId);
-            } else {
-                runEmptyChannelSketch();
-            }
+            const channelId = digitButtonDef.digit;
+            tv.runChannel(channelId);
         });
     }
 
     document.getElementById('action-channel-next').addEventListener('click', () => {
-        nextSketch();
+        tv.nextChannel();
     });
     document.getElementById('action-channel-previous').addEventListener('click', () => {
-        prevSketch();
+        tv.previousChannel();
     });
+
+    for (const channelDefinition of channelDefinitions) {
+        tv.registerP5SketchChannel(channelDefinition.channelId, channelDefinition.sketchFn);
+    }
+
+    tv.turnOn();
 });
