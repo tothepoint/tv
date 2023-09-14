@@ -1,128 +1,10 @@
-const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
-    const offsetFromServerTimeMs = serverTimestamp - clientTimestamp;
-
-    return offsetFromServerTimeMs;
-};
-
-const loadUTCTimeBasedSeed = async () => {
-    let useServerTime = true;
-    let response;
-    if (useServerTime) {
-        // Do a call to "prime" the communication.
-        response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-
-        response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-    } else {
-        // Fallback to the client's time instead of server's in case of an error.
-        return { datetime: new Date().getTime() };
-    }
-
-    if (!response.ok) {
-        timeSyncError = true;
-        console.log('Time sync error, server response:', response);
-        // const message = `Error: ${response.status}`;
-        // throw new Error(message);
-
-        // Fallback to the client's time instead of server's in case of an error.
-        return { datetime: new Date().getTime() };
-    }
-
-    const data = await response.json();
-
-    return data;
-};
-
-const loadAndCalculateTimeOffsetFromServerMs = (p) => {
-    const promise = new Promise((resolve, reject) => {
-
-        // p.noiseSeed(100);
-        //recalcMapSize();
-
-        const requestStartTime = new Date();
-        loadUTCTimeBasedSeed()
-            .then((data) => {
-                const requestEndTime = new Date();
-                const requestDurationMs = requestEndTime - requestStartTime;
-                // Calculate client time offset to server time.
-                // Always add that offset to compensate.
-                const nowServer = new Date(new Date(data.datetime).getTime());
-                const nowClient = new Date();
-
-                const nowClientTimestamp = nowClient.getTime();
-                const nowServerTimestamp = nowServer.getTime();
-                offsetFromServerTimeMs = getClientTimeOffsetFromServer(nowClientTimestamp, nowServerTimestamp);
-
-                resolve(offsetFromServerTimeMs);
-
-                // initialized = true;
-                // if (timerId) {
-                //     clearInterval(timerId);
-                // }
-
-                // const syncedTimestamp = nowClient.getTime() + offsetFromServerTimeMs;
-                // syncedTime = new Date(syncedTimestamp);
-                // const TIME_TO_OFFSET_FACTOR = 0.0001;
-
-                // offsetX = (syncedTimestamp) * TIME_TO_OFFSET_FACTOR;
-
-                // const rawServerTime = data.datetime || data.dateTime;
-                // const rawServerTimeDate = new Date(rawServerTime);
-
-                // if (freezeAfterFirstFrame) {
-                //     // DEBUG PURPOSES.
-                //     const debugInfo = {
-                //         requestStartTime,
-                //         requestEndTime,
-                //         requestDurationMs,
-                //         offsetFromServerTimeMs,
-                //         nowServer,
-                //         nowClient,
-                //         offsetX,
-                //         syncedTime,
-                //         rawServerTime,
-                //         rawServerTimeDate
-                //     };
-                //     const debugDiv = document.createElement('div');
-                //     debugDiv.style.position = 'absolute';
-                //     debugDiv.style.top = 0;
-                //     debugDiv.style.left = 0;
-                //     debugDiv.innerText = JSON.stringify(debugInfo).split(',').join(',\n').replace('{', '').replace('}', '');
-                //     document.body.appendChild(debugDiv);
-                // }
-
-                // timerId = setInterval(() => {
-                //     const syncedTimestamp = new Date().getTime() + offsetFromServerTimeMs;
-                //     syncedTime = new Date(syncedTimestamp);
-                //     offsetX = syncedTimestamp * TIME_TO_OFFSET_FACTOR;
-                // }, 50);
-            })
-            .catch(err => {
-                console.log(`Got an error fetching time: ${err}`);
-            });
-
-    });
-
-    return promise;
-};
-
 let cakesSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;
     let offsetX = 0.0;
-    // let noiseStep = 0.015;
-    let noiseStep = 0.005;
-    let initialTime;
-    let initialTimeUTCMs;
-    let seed;
     let timerId;
     let initialized = false;
-    let offsetFromServerTimeMs = 0;
-    let syncedTime;
-    let freezeAfterFirstFrame = false;
-    let firstFrameDrawn = false;
-    let timeSyncError = false;
-    let drawNext = true;
 
     const recalcMapSize = () => {
         tileWidth = p.width / mapWidth;
@@ -141,7 +23,6 @@ let cakesSketch = function (p) {
             const nowClient = new Date();
             const syncedTimestamp = nowClient.getTime() + offsetFromServerTimeMs;
             syncedTime = new Date(syncedTimestamp);
-            const TIME_TO_OFFSET_FACTOR = 0.0001;
             const CAKE_SHOWN_DURATION_MS = 5000;
 
             offsetX = (syncedTimestamp);// * TIME_TO_OFFSET_FACTOR;
@@ -159,10 +40,6 @@ let cakesSketch = function (p) {
             }, 50);
 
             initialized = true;
-
-            setInterval(() => {
-                drawNext = true;
-            }, 5000);
         });
     }
 
@@ -170,10 +47,6 @@ let cakesSketch = function (p) {
         if (!initialized) {
             return;
         }
-
-        // if (!drawNext) {
-        //     return;
-        // }
 
         p.background("black");
 
@@ -202,7 +75,6 @@ let cakesSketch = function (p) {
         const layerTopCenterX = Math.floor(p.width / 2);
         const layerBottomCenterX = layerTopCenterX;
         const layerTopHeight = Math.floor(p.height * 0.2);
-        const layerBottomHeight = layerTopHeight;
         const layerMinWidth = Math.floor(p.width / 2) * 0.1;
         let layerPrevWidth = randomInt(cakeMaxWidth / 1.5, cakeMaxWidth);
         let topLayerWidth = 0;
@@ -278,8 +150,6 @@ let cakesSketch = function (p) {
             p.fill(berryColor);
             p.ellipse(berryX, berryY, berryRadius, berryRadius);
         }
-
-        drawNext = false;
     };
 
     p.windowResized = () => {

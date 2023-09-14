@@ -5,9 +5,6 @@ let timeSeededSketch = function (p) {
     let offsetX = 0.0;
     // let noiseStep = 0.015;
     let noiseStep = 0.005;
-    let initialTime;
-    let initialTimeUTCMs;
-    let seed;
     let timerId;
     let initialized = false;
     let offsetFromServerTimeMs = 0;
@@ -21,43 +18,9 @@ let timeSeededSketch = function (p) {
         mapHeight = Math.ceil(p.height / tileWidth);
     };
 
-    const loadUTCTimeBasedSeed = async () => {
-        let useServerTime = true;
-        let response;
-        if (useServerTime) {
-            // Do a call to "prime" the communication.
-            response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-
-            response = await fetch('http://worldtimeapi.org/api/timezone/UTC');
-        } else {
-            // Fallback to the client's time instead of server's in case of an error.
-            return { datetime: new Date().getTime() };
-        }
-
-        if (!response.ok) {
-            timeSyncError = true;
-            console.log('Time sync error, server response:', response);
-            // const message = `Error: ${response.status}`;
-            // throw new Error(message);
-
-            // Fallback to the client's time instead of server's in case of an error.
-            return { datetime: new Date().getTime() };
-        }
-
-        const data = await response.json();
-
-        return data;
-    };
-
     // p.mousePressed = function mousePressed() {
     //     p.remove(); // remove whole sketch on mouse press
     // }
-
-    const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
-        const offsetFromServerTimeMs = serverTimestamp - clientTimestamp;
-
-        return offsetFromServerTimeMs;
-    };
 
     p.setup = function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -73,19 +36,13 @@ let timeSeededSketch = function (p) {
         p.noiseSeed(100);
         recalcMapSize();
 
-        const requestStartTime = new Date();
-        loadUTCTimeBasedSeed()
-            .then((data) => {
-                const requestEndTime = new Date();
-                const requestDurationMs = requestEndTime - requestStartTime;
+        loadAndCalculateTimeOffsetFromServerMs()
+            .then((offsetFromServerTimeMsResult) => {
                 // Calculate client time offset to server time.
                 // Always add that offset to compensate.
-                const nowServer = new Date(new Date(data.datetime).getTime());
                 const nowClient = new Date();
 
-                const nowClientTimestamp = nowClient.getTime();
-                const nowServerTimestamp = nowServer.getTime();
-                offsetFromServerTimeMs = getClientTimeOffsetFromServer(nowClientTimestamp, nowServerTimestamp);
+                offsetFromServerTimeMs = offsetFromServerTimeMsResult;
 
                 initialized = true;
                 if (timerId) {
@@ -97,31 +54,6 @@ let timeSeededSketch = function (p) {
                 const TIME_TO_OFFSET_FACTOR = 0.0001;
 
                 offsetX = (syncedTimestamp) * TIME_TO_OFFSET_FACTOR;
-
-                const rawServerTime = data.datetime || data.dateTime;
-                const rawServerTimeDate = new Date(rawServerTime);
-
-                if (freezeAfterFirstFrame) {
-                    // DEBUG PURPOSES.
-                    const debugInfo = {
-                        requestStartTime,
-                        requestEndTime,
-                        requestDurationMs,
-                        offsetFromServerTimeMs,
-                        nowServer,
-                        nowClient,
-                        offsetX,
-                        syncedTime,
-                        rawServerTime,
-                        rawServerTimeDate
-                    };
-                    const debugDiv = document.createElement('div');
-                    debugDiv.style.position = 'absolute';
-                    debugDiv.style.top = 0;
-                    debugDiv.style.left = 0;
-                    debugDiv.innerText = JSON.stringify(debugInfo).split(',').join(',\n').replace('{', '').replace('}', '');
-                    document.body.appendChild(debugDiv);
-                }
 
                 timerId = setInterval(() => {
                     const syncedTimestamp = new Date().getTime() + offsetFromServerTimeMs;
@@ -157,14 +89,12 @@ let timeSeededSketch = function (p) {
             p.fill('#C2B280');
             p.rect(x, y, tileWidth);
 
-            const heightToBottom = mapHeight - y;
             p.fill('#C2B280');
             p.rect(x, y + tileWidth, tileWidth, p.height - y);
 
             // let worldX = Math.floor(noiseOffset * 100);
             // let worldX = Math.floor(noiseOffset * 100);
             let seed = worldX;
-            // console.log('seed', seed);
 
             let charsToConsider = 200; // More chars -> better the mix.
             const noiseSeed = xmur3(seed + String.fromCharCode(worldX % charsToConsider))();
