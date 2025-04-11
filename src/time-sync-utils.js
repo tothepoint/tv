@@ -60,6 +60,32 @@ const loadTimeUTCPostmanAPI = async () => {
     return { datetime: serverTimestamp };
 }
 
+const loadTimeUTCTimeAPI = async () => {
+    let response;
+    if (useServerTime) {
+        response = await fetch('https://timeapi.io/api/time/current/zone?timeZone=UTC');
+    } else {
+        // Fallback to the client's time instead of server's in case of an error.
+        return { datetime: new Date().getTime() };
+    }
+
+    if (!response.ok) {
+        timeSyncError = true;
+        console.log('Time sync error, server response:', response);
+        // const message = `Error: ${response.status}`;
+        // throw new Error(message);
+
+        // Fallback to the client's time instead of server's in case of an error.
+        return { datetime: new Date().getTime() };
+    }
+
+    const data = await response.json();
+    const datetime = new Date(data.dateTime);
+    const serverTimestamp = datetime.getTime();
+
+    return { datetime: serverTimestamp };
+}
+
 const loadAndCalculateTimeOffsetFromServerMs = (forceClearCache) => {
     const promise = new Promise((resolve, reject) => {
         // Cache the calculated time offset to reduce server calls.
@@ -82,7 +108,7 @@ const loadAndCalculateTimeOffsetFromServerMs = (forceClearCache) => {
             resolve(offsetFromServerTimeMsCached);
         };
 
-        loadTimeUTCPostmanAPI()
+        loadTimeUTCTimeAPI()
             .then((data) => {
                 onTimeLoaded(data);
             })
