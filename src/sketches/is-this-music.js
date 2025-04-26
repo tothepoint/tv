@@ -532,11 +532,15 @@ const isThisMusicSketch = function (p) {
 
 isThisMusicSketch.onBeforeSketchRunPress = (event) => {
     if (event) {
-        console.log(`Event: ${event}`);
-        // Warmup the Tone.js from user interaction.
-        Tone.start().then(() => {
-            console.log('Tone.js started from user interaction.');
-            // Tone.Transport.stop();
-        });
+        try {
+            console.log(`Event: ${event}`);
+            // Warmup the Tone.js from user interaction.
+            Tone.start().then(() => {
+                console.log('Tone.js started from user interaction.');
+                // Tone.Transport.stop();
+            });
+        } catch (error) {
+            alert('Error starting Tone.js:', error);
+        }
     }
 }
