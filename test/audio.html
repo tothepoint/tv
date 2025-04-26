@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Basic Web Audio Oscillator</title>
+</head>
+
+<body>
+    <button onclick="startOscillator()">Start Oscillator</button>
+    <button onclick="stopOscillator()">Stop Oscillator</button>
+    <label for="frequency">Frequency:</label>
+    <input type="number" id="frequency" value="440">
+    <label for="type">Wave Type:</label>
+    <select id="type">
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="sawtooth">Sawtooth</option>
+        <option value="triangle">Triangle</option>
+    </select>
+
+    <script>
+        let audioContext;
+        let oscillator;
+        let gainNode;
+
+        function initializeAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination); // Connect to the speakers
+            }
+        }
+
+        function startOscillator() {
+            initializeAudio();
+
+            oscillator = audioContext.createOscillator();
+            const frequency = parseFloat(document.getElementById('frequency').value);
+            const type = document.getElementById('type').value;
+
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // Set frequency
+            oscillator.connect(gainNode);
+            oscillator.start(); // Start immediately
+        }
+
+        function stopOscillator() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+                oscillator = null;
+            }
+        }
+    </script>
+</body>
+
+</html>

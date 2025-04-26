@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Basic Tone.js Oscillator</title>
+    <script src="https://unpkg.com/tone@14.8.49"></script>
+</head>
+
+<body>
+    <button onclick="startOscillator()">Start Oscillator</button>
+    <button onclick="stopOscillator()">Stop Oscillator</button>
+    <label for="frequency">Frequency:</label>
+    <input type="number" id="frequency" value="440">
+    <label for="type">Wave Type:</label>
+    <select id="type">
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="sawtooth">Sawtooth</option>
+        <option value="triangle">Triangle</option>
+    </select>
+
+    <script>
+        let oscillator;
+
+        async function startOscillator() {
+            const frequency = parseFloat(document.getElementById('frequency').value);
+            const type = document.getElementById('type').value;
+
+            oscillator = new Tone.Oscillator(frequency, type).toDestination();
+            oscillator.start();
+        }
+
+        function stopOscillator() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.dispose(); // Clean up resources
+                oscillator = null;
+            }
+        }
+    </script>
+</body>
+
+</html>
