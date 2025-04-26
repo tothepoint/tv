@@ -512,9 +512,23 @@ const isThisMusicSketch = function (p) {
             // Create a Tone.js Synth to play the notes
             const synth = new Tone.Synth().toDestination();
 
+            Tone.Draw.schedule(function () {
+                playingY = value.note;
+
+                const noteDurationSeconds = Tone.Time(value.duration).toSeconds();
+                setTimeout(() => {
+                    playingY = undefined;
+                }, noteDurationSeconds * 1000 - 80);
+            }, time);
+
             // Trigger the synth to play the specified note at the given time
             synth.triggerAttackRelease(value.note, value.duration, time);
         }, musicScore.score);
+
+        // After part is done, play it again.
+        part.loop = true;
+        part.loopEnd = songDurationMs / 1000;
+        // part.loopStart = 0;
 
         // Set the part's tempo
         Tone.Transport.bpm.value = musicScore.tempo;
