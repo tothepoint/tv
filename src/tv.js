@@ -33,7 +33,7 @@ class TV {
         this.turnedOn = false;
     }
 
-    runChannel(channelId) {
+    runChannel(channelId, event) {
         this.turnedOn = true;
 
         if (channelId < 0 || channelId > this.channelsTotal - 1) {
@@ -54,6 +54,10 @@ class TV {
 
         let currentSketchFn = this.currentChannel.p5SketchFn;
         if (currentSketchFn) {
+            if (event && currentSketchFn.onBeforeSketchRunPress) {
+                currentSketchFn.onBeforeSketchRunPress(event);
+            }
+
             this.currentSketch = new p5(currentSketchFn, this.screenElementId);
         }
     }
@@ -103,6 +107,11 @@ class TV {
     removeCurrentSketch() {
         if (this.currentSketch) {
             this.currentSketch.remove();
+
+            if (this.currentSketch.onAfterRemove) {
+                this.currentSketch.onAfterRemove();
+            }
+
             this.currentSketch = undefined;
         }
     }

@@ -3,7 +3,8 @@ window.addEventListener('load', function () {
         { channelId: 1, sketchFn: cakesSketch },
         { channelId: 2, sketchFn: timeSeededSketch },
         { channelId: 3, sketchFn: perlinLineSketch },
-        { channelId: 4, sketchFn: perlinLine2Sketch }
+        { channelId: 4, sketchFn: perlinLine2Sketch },
+        { channelId: 5, sketchFn: isThisMusicSketch },
     ];
 
     const tv = new TV({
@@ -28,9 +29,9 @@ window.addEventListener('load', function () {
     ];
 
     for (const digitButtonDef of tvRemoteDigitButtonDefs) {
-        document.getElementById(digitButtonDef.id).addEventListener('click', () => {
+        document.getElementById(digitButtonDef.id).addEventListener('click', (event) => {
             const channelId = digitButtonDef.digit;
-            tv.runChannel(channelId);
+            tv.runChannel(channelId, event);
         });
     }
 
