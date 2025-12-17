@@ -61,7 +61,39 @@ const isThisMusicSketch = function (p) {
                 // runLoopExperiment();
                 // runRepeatedNotesExperiment();
                 // runPolySynthScoreExperiment();
-                runTimeSyncedTwinkleTwinkleExperiment(syncedTimestamp);
+
+                runComposeOneMinutePieceExperiment();
+
+                // const synthA = new Tone.Synth().toDestination();
+                // const synthB = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { release: 0.5 } }).toDestination();
+                // const melodyEvents = [
+                //     { time: '0:0:0', note: 'C4', duration: '8n' },
+                //     { time: '0:0:2', note: 'E4', duration: '8n' },
+                //     { time: '0:1:0', note: 'G4', duration: '4n' },
+                //     { time: '0:2:0', note: 'F4', duration: '8n' },
+                //     { time: '0:2:2', note: 'A4', duration: '8n' },
+                //     { time: '0:3:0', note: 'C5', duration: '2n' },
+                // ];
+
+                // const basslineEvents = [
+                //     { time: '0:0:0', note: 'C2', duration: '4n' },
+                //     { time: '0:1:0', note: 'G1', duration: '4n' },
+                //     { time: '0:2:0', note: 'A1', duration: '4n' },
+                //     { time: '0:3:0', note: 'F1', duration: '4n' },
+                // ];
+                // const melodyPart = new Tone.Part(function (time, event) {
+                //     synthA.triggerAttackRelease(event.note, event.duration, time);
+                // }, melodyEvents).start(0); // Start at time 0
+
+                // const basslinePart = new Tone.Part(function (time, event) {
+                //     synthB.triggerAttackRelease(event.note, event.duration, time);
+                // }, basslineEvents).start(0);
+
+                // Tone.Transport.bpm.value = 120;
+                // Tone.Transport.start();
+
+                // runTimeSyncedTwinkleTwinkleExperiment(syncedTimestamp);
+                // rundArpeggiatorExperiment();
 
                 // TODO: Play around with progressions, ex.: I IV V I, I ii IV V, I ii iii IV V, I ii iii IV V vi, I ii iii IV V vi vii dim, I ii iii IV V vi vii dim I.
             })
@@ -113,6 +145,18 @@ const isThisMusicSketch = function (p) {
             Tone.Transport.cancel(0);
             Tone.Transport.clear(0);
         }
+    };
+
+    const rundArpeggiatorExperiment = (syncedTimestamp) => {
+        const synth = new Tone.Synth().toDestination();
+
+        var pattern = new Tone.Pattern(function (time, note) {
+            synth.triggerAttackRelease(note, 0.1, time);
+        }, ["C4", "D4", "E4", "G4", "A4"]);
+
+        pattern.loop = false; // Loop the pattern
+        pattern.start(0);
+        Tone.Transport.start();
     };
 
     const runBasicSynthAttackReleaseExperiment = () => {
@@ -253,6 +297,222 @@ const isThisMusicSketch = function (p) {
         }, "4n");
     };
 
+    const runComposeOneMinutePieceExperiment = () => {
+        const cMinorScale = ['C4', 'D4', 'Eb4', 'F4', 'G4', 'Ab4', 'Bb4', 'C5'];
+
+        const totalDurationSeconds = 60;
+        const beatsPerMeasure = 4;
+        const score = [];
+        const tempo = 120;
+        const measures = Math.floor(totalDurationSeconds * (tempo / 60) / beatsPerMeasure);
+        const noteDuration = 60 / (tempo * beatsPerMeasure); // Duration of each note in seconds
+
+        // const bassTrack = {
+        //     instrument: "synth",
+        //     gain: 0.5,
+        //     score: []
+        // };
+        // const melodyTrack = {
+        //     instrument: "synth",
+        //     gain: 0.5,
+        //     score: []
+        // };
+
+        // // Generate the score for each measure for the bass track
+        // for (let measureNo = 0; measureNo < measures; measureNo++) {
+        //     const bassNote = cMinorScale[Math.floor(Math.random() * cMinorScale.length)];
+
+        //     bassTrack.score.push({
+        //         "time": `${measureNo}:0`,
+        //         "duration": `1n`,
+        //         "note": bassNote
+        //     });
+        // }
+
+        // // Generate the score for each measure for the melody track
+        // for (let measureNo = 0; measureNo < measures; measureNo++) {
+        //     const melodyNote = cMinorScale[Math.floor(Math.random() * cMinorScale.length)];
+
+        //     melodyTrack.score.push({
+        //         "time": `${measureNo}:0`,
+        //         "duration": `2n`,
+        //         "note": melodyNote
+        //     });
+        // }
+
+        // const musicScore = {
+        //     "tempo": tempo,
+        //     "tracks": [
+        //         bassTrack,
+        //         melodyTrack
+        //     ]
+        // };
+
+        // // Create instruments for each track
+        // const instruments = {
+        //     "synth": new Tone.Synth().toDestination(),
+        //     "bass": new Tone.Synth().toDestination()
+        // };
+
+        // const panner = new Tone.Panner({
+        //     pan: -1, // Pan position (-1 for left, 1 for right, 0 for center)
+        // }).toDestination(); // Connect to the speakers
+
+        // // Create reverb and delay effects
+        // const reverb = new Tone.Reverb({
+        //     decay: 5, // Reverb decay time in seconds
+        //     wet: 0.8, // Wet/dry mix (0 to 1)
+        // }).toDestination();
+
+        // const delay = new Tone.FeedbackDelay({
+        //     delayTime: 0.5, // Delay time in seconds
+        //     wet: 0.2, // Wet/dry mix (0 to 1)
+        // }).toDestination();
+
+        // // Connect the synth to the effects and then to the speakers
+        // // instruments.synth.chain(panner, reverb, delay, Tone.Destination);
+        // instruments.synth.chain(
+        //     // panner,
+        //     reverb,
+        //     delay,
+        //     Tone.Destination
+        // );
+
+        // // Create instruments, effects, and gains for each track
+        // const tracksData = musicScore.tracks.map((track) => {
+        //     const instrument = instruments[track.instrument];
+        //     const gain = new Tone.Gain(track.gain).toDestination();
+        //     const effects = track.effects || [];
+
+        //     // Connect the instrument to the gain
+        //     instrument.connect(gain);
+
+        //     // Connect effects to the gain
+        //     effects.forEach((effect) => {
+        //         effect.connect(gain);
+        //     });
+
+        //     return {
+        //         instrument,
+        //         gain
+        //     };
+        // });
+
+        // // Create a Tone.Part for each track and assign the instrument and gain
+        // const parts = tracksData.map((trackData, trackIndex) => {
+        //     const { instrument, gain } = trackData;
+        //     const track = musicScore.tracks[trackIndex];
+
+        //     // const score = track.score;
+        //     const score = [
+        //         { time: '0:0:0', note: 'C4', duration: '8n' },
+        //         { time: '0:0:2', note: 'E4', duration: '8n' },
+        //         { time: '0:1:0', note: 'G4', duration: '4n' },
+        //         { time: '0:2:0', note: 'F4', duration: '8n' },
+        //         { time: '0:2:2', note: 'A4', duration: '8n' },
+        //         { time: '0:3:0', note: 'C5', duration: '2n' },
+        //     ];
+        //     const part = new Tone.Part((time, value) => {
+        //         // Use the appropriate instrument for this track
+        //         // const { velocity } = value;
+
+        //         // panner.pan.value = (Math.random() > 0.5 ? -1 : 1) * Math.random(); // Left
+
+        //         // Trigger the instrument to play the specified note with velocity at the given time
+        //         instrument.triggerAttackRelease(value.note, value.duration, time);
+        //     }, score); //.start(0);
+
+        //     // Connect the part to the track's gain
+        //     //part.connect(gain);
+
+
+        //     return part;
+        // });
+
+        // parts.forEach((part, index) => {
+        //     part.start(0); // Start the part immediately
+        // });
+
+        // console.log(musicScore);
+
+        const synthA = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { release: 0.5 } });
+        const synthB = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { release: 0.5 } });
+        const synthC = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { release: 0.5 } });
+
+        // Set gains.
+        const gainSynthA = new Tone.Gain(1);
+        const gainSynthB = new Tone.Gain(0.2);
+        const gainSynthC = new Tone.Gain(0.7);
+
+        synthA.connect(gainSynthA);
+        synthB.connect(gainSynthB);
+        synthC.connect(gainSynthC);
+
+        gainSynthA.toDestination();
+        gainSynthB.toDestination();
+        gainSynthC.toDestination();
+
+
+        // const melodyEvents = [
+        //     { time: '0:0', note: 'C4', duration: '8n' },
+        //     { time: '1:0', note: 'E4', duration: '8n' },
+        // ];
+        const melodyEvents = [];
+        for (let measureNo = 0; measureNo < measures; measureNo++) {
+            for (let i = 0; i < 2; i++) {
+                melodyEvents.push({
+                    "time": `${measureNo}:${i}`,
+                    "duration": "2n",
+                    // arpegiate "up"
+                    "note": cMinorScale[i % cMinorScale.length]
+                });
+            }
+        }
+
+        // const basslineEvents = [
+        //     { time: '0:0', note: 'C2', duration: '4n' },
+        //     { time: '1:0', note: 'G1', duration: '4n' }
+        // ];
+        const basslineEvents = [];
+        for (let measureNo = 0; measureNo < measures; measureNo++) {
+            const note = cMinorScale[Math.floor(Math.random() * cMinorScale.length)];
+            const note1octaveDown = note.replace(/(\d+)/, (match) => parseInt(match) - 1);
+            basslineEvents.push({
+                "time": `${measureNo}:0`,
+                "duration": "1m",
+                "note": note1octaveDown
+            });
+        }
+
+        const arpeggioEvents = [];
+        for (let measureNo = 0; measureNo < measures; measureNo++) {
+            for (let i = 0; i < 4; i++) {
+                arpeggioEvents.push({
+                    "time": `${measureNo}:${i}`,
+                    "duration": "4n",
+                    // arpegiate "up"
+                    "note": cMinorScale[i % cMinorScale.length]
+                });
+            }
+        }
+
+        const melodyPart = new Tone.Part(function (time, event) {
+            synthA.triggerAttackRelease(event.note, event.duration, time);
+        }, melodyEvents).start(0); // Start at time 0
+
+        const basslinePart = new Tone.Part(function (time, event) {
+            synthB.triggerAttackRelease(event.note, event.duration, time);
+        }, basslineEvents).start(0);
+
+        const arpeggioPart = new Tone.Part(function (time, event) {
+            synthC.triggerAttackRelease(event.note, event.duration, time);
+        }, arpeggioEvents).start(0); // Start at time 0
+
+        // Start the transport to play the parts
+        Tone.Transport.bpm.value = 120;
+        Tone.Transport.start();
+    }
+
     const runPolySynthScoreExperiment = () => {
         //  // SCALES.
         //  var Cmajor = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
@@ -269,7 +529,7 @@ const isThisMusicSketch = function (p) {
         //          "duration": "4n",
         //          "note": Cmajor[Math.round(Math.random() * Cmajor.length)]
         //      });
-        //  }
+        //  }`
 
         const musicScore = {
             "tempo": 120,
@@ -366,7 +626,7 @@ const isThisMusicSketch = function (p) {
 
         // Create instruments for each track
         const instruments = {
-            //"synth": new Tone.Synth().toDestination(),
+            "synth": new Tone.Synth().toDestination(),
             //"fmsynth": new Tone.FMSynth().toDestination()
             "fmsynth": new Tone.PolySynth(Tone.FMSynth).toDestination()
         };
@@ -465,6 +725,9 @@ const isThisMusicSketch = function (p) {
 
             return part;
         });
+
+        // Start the transport to play the parts
+        Tone.Transport.start();
     };
 
     const runTimeSyncedTwinkleTwinkleExperiment = (syncedTimestamp) => {

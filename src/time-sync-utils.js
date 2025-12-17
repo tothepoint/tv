@@ -1,5 +1,5 @@
 let offsetFromServerTimeMsCached;
-let useServerTime = true;
+let useServerTime = false;
 
 const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
     const offsetFromServerTimeMs = serverTimestamp - clientTimestamp;
