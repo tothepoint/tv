@@ -5,6 +5,7 @@ window.addEventListener('load', function () {
         { channelId: 3, sketchFn: perlinLineSketch },
         { channelId: 4, sketchFn: perlinLine2Sketch },
         { channelId: 5, sketchFn: isThisMusicSketch },
+        { channelId: 7, sketchFn: growFlowersByVoiceSketch }
     ];
 
     const tv = new TV({

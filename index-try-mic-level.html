@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Test mic</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script src="lib/p5.min.js"></script>
+    <script src="lib/p5.sound.min.js"></script>
+
+    <script>
+        // Sketch to test mic level
+        // Draw mic level to canvas as text
+        // Init mic only after user interaction (click)
+        let mic;
+        let micStarted = false; // Flag to track if mic is ready
+        function setup() {
+            createCanvas(400, 200);
+            background(200);
+            textAlign(CENTER, CENTER);
+            textSize(32);
+            fill(0);
+            text("Click to start mic", width / 2, height / 2);
+        }
+
+        function mousePressed() {
+            if (!mic) {
+                getAudioContext().resume();
+                mic = new p5.AudioIn();
+                mic.start(() => {
+                    console.log('Mic started successfully');
+                    micStarted = true; // Set flag when ready
+                }, (err) => {
+                    console.error('Mic start failed:', err);
+                });
+            }
+        }
+
+        function draw() {
+            background(200);
+            if (micStarted && mic) {
+                let level = mic.getLevel();
+                let levelText = "Mic Level: " + nf(level, 1, 5);
+                text(levelText, width / 2, height / 2);
+            } else {
+                text("Click to start mic", width / 2, height / 2);
+            }
+        }
+
+    </script>
+
+
+</head>
