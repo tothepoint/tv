@@ -54,11 +54,14 @@ class TV {
 
         let currentSketchFn = this.currentChannel.p5SketchFn;
         if (currentSketchFn) {
+            let p = Promise.resolve(true);
             if (event && currentSketchFn.onBeforeSketchRunPress) {
-                currentSketchFn.onBeforeSketchRunPress(event);
+                p = currentSketchFn.onBeforeSketchRunPress(event);
             }
 
-            this.currentSketch = new p5(currentSketchFn, this.screenElementId);
+            p.then(() => {
+                this.currentSketch = new p5(currentSketchFn, this.screenElementId);
+            });
         }
     }
 
