@@ -64,6 +64,14 @@ let growFlowersByVoiceSketch = function (p) {
         }
     };
 
+    p.touchStarted = () => {
+        if (!micStarted) {
+            startMic();
+        }
+
+        return false; // Prevent default behavior
+    };
+
     p.draw = function () {
         if (!micStarted) {
             p.textSize(24);
