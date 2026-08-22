@@ -1,3 +1,6 @@
+import * as Tone from 'tone';
+import { calcTvCanvasSize } from '../tv-utils.js';
+
 let cols, rows;
 let grid; // 2D array to track occupied spaces
 let pixelSize = 8; // Size of each "pixel"
@@ -5,7 +8,7 @@ let stems = []; // List of active growing stems
 let blooms = []; // List of blooming flowers
 let bloomLevel = 6;
 
-let growFlowersByVoiceSketch = function (p) {
+export const growFlowersByVoiceSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;

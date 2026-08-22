@@ -1,10 +1,15 @@
-let cakesSketch = function (p) {
+import { calcTvCanvasSize } from '../tv-utils.js';
+import { xmur3, mb32 } from '../random-utils.js';
+import { loadAndCalculateTimeOffsetFromServerMs } from '../time-sync-utils.js';
+
+export const cakesSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;
     let offsetX = 0.0;
     let timerId;
     let initialized = false;
+    let syncedTime = new Date();
 
     const recalcMapSize = () => {
         tileWidth = p.width / mapWidth;

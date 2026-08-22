@@ -1,4 +1,6 @@
-let emptyChannelSketch = function (p) {
+import { calcTvCanvasSize } from '../tv-utils.js';
+
+export const emptyChannelSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;

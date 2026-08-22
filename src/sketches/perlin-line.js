@@ -1,4 +1,6 @@
-let perlinLineSketch = function (p) {
+import { calcTvCanvasSize } from '../tv-utils.js';
+
+export const perlinLineSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;

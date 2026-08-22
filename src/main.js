@@ -1,3 +1,11 @@
+import { TV } from './tv.js';
+import { cakesSketch } from './sketches/cakes.js';
+import { timeSeededSketch } from './sketches/time-seeded.js';
+import { perlinLineSketch } from './sketches/perlin-line.js';
+import { perlinLine2Sketch } from './sketches/perlin-line-2.js';
+import { growFlowersByVoiceSketch } from './sketches/grow-flowers-by-voice.js';
+import '../style.css';
+
 window.addEventListener('load', function () {
     const channelDefinitions = [
         { channelId: 1, sketchFn: cakesSketch },

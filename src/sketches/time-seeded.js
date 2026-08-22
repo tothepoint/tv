@@ -1,4 +1,8 @@
-let timeSeededSketch = function (p) {
+import { calcTvCanvasSize } from '../tv-utils.js';
+import { xmur3, mb32 } from '../random-utils.js';
+import { loadAndCalculateTimeOffsetFromServerMs } from '../time-sync-utils.js';
+
+export const timeSeededSketch = function (p) {
     let mapWidth = 64;
     let mapHeight;
     let tileWidth;

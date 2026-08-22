@@ -1,7 +1,8 @@
 let offsetFromServerTimeMsCached;
 let useServerTime = false;
+let timeSyncError = false;
 
-const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
+export const getClientTimeOffsetFromServer = (clientTimestamp, serverTimestamp) => {
     const offsetFromServerTimeMs = serverTimestamp - clientTimestamp;
 
     return offsetFromServerTimeMs;
@@ -86,7 +87,7 @@ const loadTimeUTCTimeAPI = async () => {
     return { datetime: serverTimestamp };
 }
 
-const loadAndCalculateTimeOffsetFromServerMs = (forceClearCache) => {
+export const loadAndCalculateTimeOffsetFromServerMs = (forceClearCache) => {
     const promise = new Promise((resolve, reject) => {
         // Cache the calculated time offset to reduce server calls.
         if (offsetFromServerTimeMsCached !== undefined && !forceClearCache) {

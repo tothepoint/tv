@@ -1,4 +1,7 @@
-class TV {
+import p5 from 'p5';
+import { emptyChannelSketch } from './sketches/empty-channel.js';
+
+export class TV {
     constructor(options) {
         this.screenElementId = options.screenElementId;
         this.channels = {};
