@@ -1,11 +1,11 @@
 {
   "name": "tv",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/bump-version.mjs && vite build",
     "preview": "vite preview --host"
   },
   "devDependencies": {

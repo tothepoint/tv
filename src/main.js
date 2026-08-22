@@ -7,6 +7,10 @@ import { growFlowersByVoiceSketch } from './sketches/grow-flowers-by-voice.js';
 import '../style.css';
 
 window.addEventListener('load', function () {
+    const versionElement = document.getElementById('app-version');
+    const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev';
+    versionElement.textContent = `v${appVersion}`;
+
     const channelDefinitions = [
         { channelId: 1, sketchFn: cakesSketch },
         { channelId: 2, sketchFn: timeSeededSketch },
