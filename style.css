@@ -10,7 +10,8 @@ html {
 
 body {
   font-size: 16px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 button {
@@ -94,6 +95,96 @@ canvas {
   justify-content: center;
   gap: 1rem;
   align-items: center;
+}
+
+.mobile-remote-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .tv-and-remote {
+    position: relative;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  .tv-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  img.tv {
+    display: block;
+    width: min(92vw, 30rem);
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+  }
+
+  .tv-remote-control {
+    position: fixed;
+    left: 50%;
+    bottom: 4rem;
+    transform: translateX(-50%) translateY(calc(100% + 1rem));
+    max-width: 18rem;
+    padding: 0.75rem;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+    z-index: 30;
+  }
+
+  .tv-remote-control.mobile-open {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-remote-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    left: 50%;
+    bottom: 0.75rem;
+    transform: translateX(-50%);
+    z-index: 40;
+    width: 3.7rem;
+    height: 3.7rem;
+    padding: 0.2rem;
+    background: rgba(17, 17, 17, 0.94);
+    color: #f7f7f7;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.9rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+
+  .mobile-remote-toggle svg {
+    width: 2.7rem;
+    height: 2.7rem;
+    display: block;
+  }
+
+  .tv-remote-control .spacer-row {
+    min-height: 1.5rem;
+  }
+
+  .tv-remote-control .btn {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .tv-remote-control .btn-segment {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
 }
 
 .tv-remote-control {

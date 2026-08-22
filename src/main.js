@@ -24,6 +24,31 @@ window.addEventListener('load', function () {
         screenElementId: 'tv-sketch'
     });
 
+    const mobileRemoteToggle = document.getElementById('mobile-remote-toggle');
+    const tvRemoteControl = document.getElementById('tv-remote-control');
+
+    const closeMobileRemote = () => {
+        if (!tvRemoteControl || !mobileRemoteToggle) return;
+        tvRemoteControl.classList.remove('mobile-open');
+        mobileRemoteToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    const toggleMobileRemote = () => {
+        if (!tvRemoteControl || !mobileRemoteToggle) return;
+        const isOpen = tvRemoteControl.classList.toggle('mobile-open');
+        mobileRemoteToggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    mobileRemoteToggle?.addEventListener('click', () => {
+        toggleMobileRemote();
+    });
+
+    tvRemoteControl?.addEventListener('click', (event) => {
+        if (event.target instanceof HTMLElement && event.target.closest('button')) {
+            closeMobileRemote();
+        }
+    });
+
     document.getElementById('action-power-on-off').addEventListener('click', () => {
         tv.toggleTurnOn();
     });

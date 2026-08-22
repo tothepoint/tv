@@ -7,6 +7,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="module" src="./src/main.js"></script>
 </head>
 
@@ -19,7 +20,22 @@
                 <div id="tv-sketch"></div>
             </div>
         </div>
-        <div class="tv-remote-control">
+        <button id="mobile-remote-toggle" class="mobile-remote-toggle" type="button" aria-label="Toggle remote" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="4.1" y="2.8" width="15.8" height="18.4" rx="3.1" fill="currentColor" />
+                <circle cx="8.2" cy="7.2" r="1.7" fill="#ff463a"/>
+                <circle cx="12" cy="7.2" r="1.7" fill="#d7d7d7"/>
+                <circle cx="15.8" cy="7.2" r="1.7" fill="#d7d7d7"/>
+                <rect x="7.3" y="10.5" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="10.8" y="10.5" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="14.3" y="10.5" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="7.3" y="14.1" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="10.8" y="14.1" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="14.3" y="14.1" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+                <rect x="10.8" y="17.7" width="2.4" height="2.4" rx="0.6" fill="#1d1d1d"/>
+            </svg>
+        </button>
+        <div class="tv-remote-control" id="tv-remote-control">
             <div class="btn-row">
                 <button id="action-power-on-off" class="btn btn-remote btn-round btn-power-on-off"></button>
                 <div class="spacer"></div>
