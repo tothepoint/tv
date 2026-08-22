@@ -80,11 +80,9 @@ export const growFlowersByVoiceSketch = function (p) {
 
     p.draw = function () {
         if (!micStarted) {
-            if (SHOW_LABELS) {
-                p.textSize(24);
-                p.textAlign(p.CENTER, p.CENTER);
-                p.text('Click anywhere to start Mic', p.width / 2, p.height / 2);
-            }
+            p.textSize(24);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.text('Click anywhere to start Mic', p.width / 2, p.height / 2);
             return;
         }
 
@@ -127,7 +125,7 @@ export const growFlowersByVoiceSketch = function (p) {
                 p.fill(255);
                 p.textSize(12);
                 p.textAlign(p.LEFT, p.TOP);
-                p.text(`Freq: ${displayFreq.toFixed(1)} Hz\nNote: ${displayNote}\nLevel: ${(micLevel*100).toFixed(0)}%`, 10, 10);
+                p.text(`Freq: ${displayFreq.toFixed(1)} Hz\nNote: ${displayNote}\nLevel: ${(micLevel * 100).toFixed(0)}%`, 10, 10);
                 p.pop();
             } catch (e) {
                 // ignore if helpers not available yet
