@@ -155,7 +155,8 @@ class Stem {
         this.x = x;
         this.y = y;
         this.dirY = dirY; // Usually -1 (up)
-        this.life = p.random(10, 40); // How long this segment grows
+        //this.life = p.random(10, 40); // How long this segment grows
+        this.life = p.random(2, Math.floor(p.height / pixelSize));
         this.finished = false;
         this.color = p.color(p.random(40, 80), p.random(150, 200), p.random(40, 80));
     }
