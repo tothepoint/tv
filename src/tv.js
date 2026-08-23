@@ -5,11 +5,33 @@ export class TV {
     constructor(options) {
         this.screenElementId = options.screenElementId;
         this.channels = {};
-        this.currentChannelId = 1;
         this.channelsTotal = 10; // Channels start at 0.
+        this.storageKey = 'tv-last-channel-id';
+        this.currentChannelId = this.getStoredChannelId();
         this.lastChannelId = this.currentChannelId;
         this.turnedOn = false;
         this.currentSketch = undefined;
+    }
+
+    getStoredChannelId() {
+        try {
+            const storedChannelId = Number.parseInt(window.localStorage.getItem(this.storageKey), 10);
+            if (Number.isInteger(storedChannelId) && storedChannelId >= 0 && storedChannelId < this.channelsTotal) {
+                return storedChannelId;
+            }
+        } catch {
+            // Ignore storage access issues (e.g. browsers with disabled storage).
+        }
+
+        return 1;
+    }
+
+    persistChannelId(channelId) {
+        try {
+            window.localStorage.setItem(this.storageKey, String(channelId));
+        } catch {
+            // Ignore storage access issues (e.g. browsers with disabled storage).
+        }
     }
 
     toggleTurnOn() {
@@ -49,6 +71,7 @@ export class TV {
 
         this.currentChannel = this.channels[channelId];
         this.currentChannelId = channelId;
+        this.persistChannelId(channelId);
 
         if (!this.currentChannel) {
             this.runEmptyChannelSketch();
