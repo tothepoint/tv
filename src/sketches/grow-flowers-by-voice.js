@@ -82,7 +82,10 @@ export const growFlowersByVoiceSketch = function (p) {
         if (!micStarted) {
             p.textSize(24);
             p.textAlign(p.CENTER, p.CENTER);
-            p.text('Click anywhere to start Mic', p.width / 2, p.height / 2);
+            p.fill(255);
+            p.textFont('monospace');
+            p.text('Click to start Mic', p.width / 2, p.height / 2 - 24 / 2);
+            p.text('Hum to grow flowers', p.width / 2, p.height / 2 + 30 - 24 / 2);
             return;
         }
 
