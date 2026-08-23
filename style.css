@@ -265,3 +265,52 @@ canvas {
   flex: 1;
   min-width: 44px;
 }
+
+/* Small mobile portrait tweaks: move remote further down, ensure it fits, and place
+   the toggle button in the bottom-left so it doesn't overlap the remote. */
+@media (max-width: 420px) and (orientation: portrait) {
+  .tv-remote-control {
+    /* place the remote close to the bottom but leave room for the toggle */
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(calc(100% + 0.5rem));
+    max-width: 90vw;
+    padding: 0.5rem;
+    /* make sure the remote can't overflow the viewport height */
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+
+  .tv-remote-control.mobile-open {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Move the toggle button to bottom-left so it doesn't overlap the remote */
+  .mobile-remote-toggle {
+    left: calc(1rem + env(safe-area-inset-left));
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    transform: none;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 0.2rem;
+    border-radius: 0.75rem;
+    z-index: 60;
+  }
+
+  .mobile-remote-toggle svg {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  /* Slightly reduce button sizes to help fit on very small screens */
+  .tv-remote-control .btn {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+
+  .tv-remote-control .btn-segment {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 1.2rem;
+  }
+}

@@ -26,12 +26,6 @@ window.addEventListener('load', function () {
     const mobileRemoteToggle = document.getElementById('mobile-remote-toggle');
     const tvRemoteControl = document.getElementById('tv-remote-control');
 
-    const closeMobileRemote = () => {
-        if (!tvRemoteControl || !mobileRemoteToggle) return;
-        tvRemoteControl.classList.remove('mobile-open');
-        mobileRemoteToggle.setAttribute('aria-expanded', 'false');
-    };
-
     const toggleMobileRemote = () => {
         if (!tvRemoteControl || !mobileRemoteToggle) return;
         const isOpen = tvRemoteControl.classList.toggle('mobile-open');
@@ -42,11 +36,28 @@ window.addEventListener('load', function () {
         toggleMobileRemote();
     });
 
-    tvRemoteControl?.addEventListener('click', (event) => {
-        if (event.target instanceof HTMLElement && event.target.closest('button')) {
-            closeMobileRemote();
-        }
-    });
+    // Close mobile remote when clicking outside on mobile (when the toggle button is visible)
+    const isElementVisible = (el) => {
+        if (!el) return false;
+        // offsetParent is a reliable quick check for display:none; also guard with computed style checks
+        if (el.offsetParent !== null) return true;
+        const cs = getComputedStyle(el);
+        return cs && cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0';
+    };
+
+    const closeMobileRemoteIfOpenAndClickedOutside = (event) => {
+        if (!tvRemoteControl || !mobileRemoteToggle) return;
+        if (!tvRemoteControl.classList.contains('mobile-open')) return;
+        // only active on mobile when the toggle is visible
+        if (!isElementVisible(mobileRemoteToggle)) return;
+        const target = event.target;
+        if (tvRemoteControl.contains(target) || mobileRemoteToggle.contains(target)) return;
+        // clicked outside the remote & toggle -> close the mobile remote
+        tvRemoteControl.classList.remove('mobile-open');
+        mobileRemoteToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    document.addEventListener('click', closeMobileRemoteIfOpenAndClickedOutside);
 
     document.getElementById('action-power-on-off').addEventListener('click', () => {
         tv.toggleTurnOn();
@@ -62,7 +73,7 @@ window.addEventListener('load', function () {
         { digit: 7, id: 'action-7' },
         { digit: 8, id: 'action-8' },
         { digit: 9, id: 'action-9' },
-        { digit: 0, id: 'action-0' }
+        // { digit: 0, id: 'action-0' }
     ];
 
     for (const digitButtonDef of tvRemoteDigitButtonDefs) {
@@ -72,12 +83,12 @@ window.addEventListener('load', function () {
         });
     }
 
-    document.getElementById('action-channel-next').addEventListener('click', () => {
-        tv.nextChannel();
-    });
-    document.getElementById('action-channel-previous').addEventListener('click', () => {
-        tv.previousChannel();
-    });
+    // document.getElementById('action-channel-next').addEventListener('click', () => {
+    //     tv.nextChannel();
+    // });
+    // document.getElementById('action-channel-previous').addEventListener('click', () => {
+    //     tv.previousChannel();
+    // });
 
     for (const channelDefinition of channelDefinitions) {
         tv.registerP5SketchChannel(channelDefinition.channelId, channelDefinition.sketchFn);
