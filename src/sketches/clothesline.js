@@ -6,13 +6,42 @@ export const clotheslineSketch = function (p) {
     let initialized = false;
     let offsetFromServerTimeMs = 0;
 
-    // Animation & World Configuration
-    const SPEED_PX_PER_SEC = 20; // Clothesline travel speed in screen pixels / second
-    const ITEM_SPACING_PX = 140;   // Distance between potential item slots on the line
-    const PALETTE = ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4', '#6A4C93'];
+    const SPEED_PX_PER_SEC = 20;
+    const ITEM_SPACING_PX = 140;
+    const LINE_SAG_PX = 15;
+    const CLOTHES_OFFSET_Y = 4;
+
+    const PALETTE = [
+        '#FF595E',
+        '#FFCA3A',
+        '#8AC926',
+        '#1982C4',
+        '#6A4C93',
+        '#FF9F1C',
+        '#2EC4B6',
+        '#E71D36',
+        '#FF6B6B',
+        '#4ECDC4',
+        '#F7FFF7',
+        '#1A535C',
+        '#FFE66D',
+        '#FF6B6B',
+        '#4ECDC4',
+        '#556270',
+        '#C7F464',
+        '#FF6B6B',
+        '#C44D58',
+        '#FFB400',
+    ];
+
+    const BACKGROUND_COLOR = '#89b8e4';
+    const ROPE_COLOR = '#5C4033';
+    const PEG_COLOR = '#3A2820';
+    const HANGER_COLOR = '#E0E0E0';
 
     p.setup = function () {
         const canvasSize = calcTvCanvasSize();
+
         p.createCanvas(canvasSize.width, canvasSize.height);
 
         loadAndCalculateTimeOffsetFromServerMs()
@@ -21,8 +50,7 @@ export const clotheslineSketch = function (p) {
                 initialized = true;
             })
             .catch((err) => {
-                console.error(`Time sync failed: ${err}`);
-                // Fallback to local clock
+                console.error('Time sync failed:', err);
                 initialized = true;
             });
     };
@@ -30,141 +58,277 @@ export const clotheslineSketch = function (p) {
     p.draw = function () {
         if (!initialized) return;
 
-        // 1. Calculate continuous synced timestamp (ms) directly inside draw()
         const nowMs = Date.now() + offsetFromServerTimeMs;
-
-        // 2. Compute smooth floating-point world scroll offset (pixels)
         const worldX = (nowMs / 1000) * SPEED_PX_PER_SEC;
-
-        // 3. Render Background & Clothesline Base
-        p.background('#89b8e4'); // Sky blue
-
         const lineY = p.height * 0.45;
-        const lineSag = 15; // Catenary sag depth
 
-        // Draw hanging rope (catenary curve/arc)
-        p.stroke('#5C4033');
-        p.strokeWeight(3);
-        p.noFill();
-        p.beginShape();
-        for (let x = 0; x <= p.width; x += 4) {
-            // Add subtle sine-wave catenary sag across the screen width
-            const sag = Math.sin((x / p.width) * Math.PI) * lineSag;
-            p.vertex(x, lineY + sag);
-        }
-        p.endShape();
+        p.background(BACKGROUND_COLOR);
 
-        // 4. Calculate visible item index range
-        // Adding safety margins (-2 to +2) ensures smooth entrance and exit
-        const minIndex = Math.floor((worldX - 100) / ITEM_SPACING_PX);
-        const maxIndex = Math.ceil((worldX + p.width + 100) / ITEM_SPACING_PX);
+        drawClothesline(lineY);
 
-        // 5. Render procedurally generated items in view
-        for (let i = minIndex; i <= maxIndex; i++) {
-            renderClotheslineItem(i, worldX, lineY, lineSag);
+        const minIndex = Math.floor(
+            (worldX - ITEM_SPACING_PX) / ITEM_SPACING_PX
+        );
+        const maxIndex = Math.ceil(
+            (worldX + p.width + ITEM_SPACING_PX) / ITEM_SPACING_PX
+        );
+
+        for (let itemIndex = minIndex; itemIndex <= maxIndex; itemIndex++) {
+            renderClotheslineItem(itemIndex, worldX, lineY);
         }
 
-        // 6. Overlay Sync Status / HUD
         renderHUD(nowMs);
     };
 
-    function renderClotheslineItem(itemIndex, worldX, lineY, lineSag) {
-        // Continuous position in world coordinates
-        const itemWorldX = itemIndex * ITEM_SPACING_PX;
+    function drawClothesline(lineY) {
+        p.push();
+        p.stroke(ROPE_COLOR);
+        p.strokeWeight(3);
+        p.noFill();
 
-        // Screen position (sub-pixel float, NO Math.floor)
+        p.beginShape();
+
+        for (let x = 0; x <= p.width; x += 4) {
+            p.vertex(x, lineY + getLineSag(x));
+        }
+
+        p.endShape();
+        p.pop();
+    }
+
+    function getLineSag(x) {
+        if (p.width <= 0) return 0;
+
+        return Math.sin((x / p.width) * p.PI) * LINE_SAG_PX;
+    }
+
+    function renderClotheslineItem(itemIndex, worldX, lineY) {
+        const itemWorldX = itemIndex * ITEM_SPACING_PX;
         const screenX = itemWorldX - worldX;
 
-        // Seed PRNG deterministically based purely on the item's unique index
-        const seed = xmur3(`clothes_item_${itemIndex}`)();
-        const rand = mb32(seed);
+        const rand = mb32(xmur3(`clothes_item_${itemIndex}`)());
 
-        // Procedural generation parameters
-        const hasItem = rand() > 0.2; // 80% chance to have an item on this peg
-        if (!hasItem) return;
+        if (rand() <= 0.2) return;
+
+        const radius = 18 + rand() * 14;
+
+        const dimensions = {
+            w: radius * 1.5,
+            h: radius * 1.8,
+        };
 
         const colorIndex = Math.floor(rand() * PALETTE.length);
-        const itemRadius = 18 + rand() * 14;
         const itemColor = PALETTE[colorIndex];
+        const patternColor = PALETTE[getDifferentColorIndex(rand, colorIndex)];
+        const patternType = Math.floor(rand() * 4);
 
-        // Match Y coordinate to line sag
-        const screenSag = Math.sin((screenX / p.width) * Math.PI) * lineSag;
-        const itemY = lineY + (isNaN(screenSag) ? 0 : screenSag);
+        const itemY =
+            lineY +
+            getLineSag(screenX) +
+            CLOTHES_OFFSET_Y;
 
         p.push();
         p.translate(screenX, itemY);
 
-        // Clothes Peg / Clip
-        p.stroke('#3A2820');
-        p.strokeWeight(2);
-        p.line(0, -6, 0, 6);
-
-        // Clothesline Item (Smoothly rendered ball/garment MVP)
-        //p.fill(itemColor);
-        //p.noStroke();
-        //p.ellipse(0, itemRadius + 4, itemRadius * 1.8, itemRadius * 2);
-
-        // Optional detail (e.g., pattern highlight)
-        // p.fill(255, 255, 255, 80);
-        // p.ellipse(-itemRadius * 0.3, itemRadius * 0.7, itemRadius * 0.5, itemRadius * 0.5);
-
-       // Draw an improved t-shirt shape
-        p.fill(itemColor);
-        p.noStroke();
-        
-        const w = itemRadius * 1.5;
-        const h = itemRadius * 1.8;
-        
-        // 1. Draw the hanger clip (a simple line sticking up from the neck)
-        p.stroke(itemColor); // Or change to a specific color like p.color(200)
-        p.strokeWeight(2);
-        p.line(0, -h * 0.2, 0, h * 0.15); 
-        
-        // 2. Draw the T-shirt shape
-        p.fill(itemColor);
-        p.noStroke();
-        
-        p.beginShape();
-        // Neck scoop (top center)
-        p.vertex(0, h * 0.15);
-        // Top-left collar
-        p.vertex(-w * 0.25, 0);
-        // Left shoulder edge
-        p.vertex(-w * 0.5, h * 0.05);
-        // Left sleeve outer edge
-        p.vertex(-w * 0.8, h * 0.4);
-        // Left armpit
-        p.vertex(-w * 0.5, h * 0.5);
-        // Left bottom hem (slightly tapered)
-        p.vertex(-w * 0.45, h);
-        // Right bottom hem
-        p.vertex(w * 0.45, h);
-        // Right armpit
-        p.vertex(w * 0.5, h * 0.5);
-        // Right sleeve outer edge
-        p.vertex(w * 0.8, h * 0.4);
-        // Right shoulder edge
-        p.vertex(w * 0.5, h * 0.05);
-        // Top-right collar
-        p.vertex(w * 0.25, 0);
-        p.endShape(p.CLOSE);
+        drawPeg();
+        drawHanger(dimensions);
+        drawShirtBase(dimensions, itemColor);
+        drawPattern(dimensions, patternType, patternColor, rand);
+        drawShirtOutline(dimensions);
 
         p.pop();
     }
 
-    function renderHUD(syncedMs) {
-        const t = new Date(syncedMs);
-        const timeStr = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}:${t.getSeconds().toString().padStart(2, '0')}.${Math.floor(t.getMilliseconds() / 100)}`;
+    function getDifferentColorIndex(rand, excludedIndex) {
+        let index = Math.floor(rand() * (PALETTE.length - 1));
 
+        if (index >= excludedIndex) {
+            index++;
+        }
+
+        return index;
+    }
+
+    function drawPeg() {
+        p.push();
+        p.stroke(PEG_COLOR);
+        p.strokeWeight(2);
+        p.line(0, -6, 0, 6);
+        p.pop();
+    }
+
+    function drawHanger({ w, h }) {
+        p.push();
+        p.stroke(HANGER_COLOR);
+        p.strokeWeight(2);
+        p.noFill();
+
+        p.line(0, h * 0.15, 0, -h * 0.1);
+
+        const hookSize = w * 0.25;
+
+        // p.arc(
+        //     hookSize / 2,
+        //     -h * 0.1,
+        //     hookSize,
+        //     hookSize,
+        //     p.PI,
+        //     p.TWO_PI + p.QUARTER_PI
+        // );
+
+        p.pop();
+    }
+
+    function getShirtVertices({ w, h }) {
+        return [
+            [0, h * 0.15],
+            [-w * 0.25, 0],
+            [-w * 0.5, h * 0.05],
+            [-w * 0.8, h * 0.4],
+            [-w * 0.5, h * 0.5],
+            [-w * 0.45, h],
+            [w * 0.45, h],
+            [w * 0.5, h * 0.5],
+            [w * 0.8, h * 0.4],
+            [w * 0.5, h * 0.05],
+            [w * 0.25, 0],
+        ];
+    }
+
+    function drawShirtBase(dimensions, color) {
+        p.push();
+        p.fill(color);
+        p.noStroke();
+        drawShirtPath(dimensions);
+        p.pop();
+    }
+
+    function drawShirtPath(dimensions) {
+        p.beginShape();
+
+        for (const [x, y] of getShirtVertices(dimensions)) {
+            p.vertex(x, y);
+        }
+
+        p.endShape(p.CLOSE);
+    }
+
+    function drawPattern(dimensions, patternType, color, rand) {
+        const ctx = p.drawingContext;
+
+        ctx.save();
+
+        createShirtClipPath(dimensions);
+        ctx.clip();
+
+        switch (patternType) {
+            case 1:
+                drawHorizontalStripes(dimensions, color);
+                break;
+
+            case 2:
+                drawPolkaDots(dimensions, color, rand);
+                break;
+
+            case 3:
+                drawDiagonalStripes(dimensions, color);
+                break;
+        }
+
+        ctx.restore();
+    }
+
+    function createShirtClipPath(dimensions) {
+        const ctx = p.drawingContext;
+        const vertices = getShirtVertices(dimensions);
+
+        ctx.beginPath();
+        ctx.moveTo(vertices[0][0], vertices[0][1]);
+
+        for (let i = 1; i < vertices.length; i++) {
+            ctx.lineTo(vertices[i][0], vertices[i][1]);
+        }
+
+        ctx.closePath();
+    }
+
+    function drawHorizontalStripes({ w, h }, color) {
+        p.push();
+        p.stroke(color);
+        p.strokeWeight(h * 0.1);
+
+        for (let y = h * 0.15; y < h; y += h * 0.25) {
+            p.line(-w, y, w, y);
+        }
+
+        p.pop();
+    }
+
+    function drawPolkaDots({ w, h }, color, rand) {
+        p.push();
+        p.fill(color);
+        p.noStroke();
+
+        const numDots = 4 + Math.floor(rand() * 5);
+
+        for (let i = 0; i < numDots; i++) {
+            const x = -w * 0.8 + rand() * w * 1.6;
+            const y = h * 0.1 + rand() * h * 0.8;
+            const diameter = w * 0.15 + rand() * w * 0.2;
+
+            p.circle(x, y, diameter);
+        }
+
+        p.pop();
+    }
+
+    function drawDiagonalStripes({ w, h }, color) {
+        p.push();
+        p.stroke(color);
+        p.strokeWeight(h * 0.08);
+
+        for (let x = -w - h; x < w + h; x += w * 0.3) {
+            p.line(x, 0, x + h, h);
+        }
+
+        p.pop();
+    }
+
+    function drawShirtOutline(dimensions) {
+        p.push();
+        p.noFill();
+        p.stroke(0, 35);
+        p.strokeWeight(1);
+        drawShirtPath(dimensions);
+        p.pop();
+    }
+
+    function renderHUD(syncedMs) {
+        const time = new Date(syncedMs);
+
+        const timeStr =
+            `${time.getHours().toString().padStart(2, '0')}:` +
+            `${time.getMinutes().toString().padStart(2, '0')}:` +
+            `${time.getSeconds().toString().padStart(2, '0')}.` +
+            `${Math.floor(time.getMilliseconds() / 100)}`;
+
+        const label = `SYNCED TIME: ${timeStr}`;
+
+        p.push();
         p.fill('#111111');
         p.noStroke();
         p.textSize(12);
         p.textStyle(p.BOLD);
-        p.text(`SYNCED TIME: ${timeStr}`, p.width / 2 - p.textWidth(`SYNCED TIME: ${timeStr}`) / 2, 30);
+        p.text(label, p.width / 2 - p.textWidth(label) / 2, 30);
+        p.pop();
     }
 
-    p.windowResized = () => {
+    p.windowResized = function () {
         const canvasSize = calcTvCanvasSize();
-        p.resizeCanvas(canvasSize.width, canvasSize.height);
+
+        p.resizeCanvas(
+            canvasSize.width,
+            canvasSize.height
+        );
     };
 };
