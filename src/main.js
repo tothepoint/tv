@@ -5,6 +5,7 @@ import { perlinLineSketch } from './sketches/perlin-line.js';
 import { perlinLine2Sketch } from './sketches/perlin-line-2.js';
 import { growFlowersByVoiceSketch } from './sketches/grow-flowers-by-voice.js';
 import { clotheslineSketch } from './sketches/clothesline.js';
+import { shapeDrawerSketch } from './sketches/shape-drawer.js';
 
 window.addEventListener('load', function () {
     const versionElement = document.getElementById('app-version');
@@ -17,6 +18,7 @@ window.addEventListener('load', function () {
         { channelId: 3, sketchFn: perlinLineSketch },
         { channelId: 4, sketchFn: perlinLine2Sketch },
         { channelId: 5, sketchFn: clotheslineSketch },
+        { channelId: 6, sketchFn: shapeDrawerSketch },
         // { channelId: 5, sketchFn: isThisMusicSketch },
         { channelId: 7, sketchFn: growFlowersByVoiceSketch }
     ];

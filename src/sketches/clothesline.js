@@ -110,17 +110,11 @@ export const clotheslineSketch = function (p) {
 
         if (rand() <= 0.2) return;
 
-        const radius = 18 + rand() * 14;
-
-        const dimensions = {
-            w: radius * 1.5,
-            h: radius * 1.8,
-        };
-
         const colorIndex = Math.floor(rand() * PALETTE.length);
         const itemColor = PALETTE[colorIndex];
         const patternColor = PALETTE[getDifferentColorIndex(rand, colorIndex)];
-        const patternType = Math.floor(rand() * 4);
+
+        const itemType = Math.floor(rand() * 10) < 7 ? 'shirt' : 'pants';
 
         const itemY =
             lineY +
@@ -131,10 +125,22 @@ export const clotheslineSketch = function (p) {
         p.translate(screenX, itemY);
 
         drawPeg();
-        drawHanger(dimensions);
-        drawShirtBase(dimensions, itemColor);
-        drawPattern(dimensions, patternType, patternColor, rand);
-        drawShirtOutline(dimensions);
+        drawHanger({ w: 30, h: 80 });
+
+        if (itemType === 'shirt') {
+            const radius = 18 + rand() * 14;
+            const dimensions = {
+                w: radius * 1.5,
+                h: radius * 1.8,
+            };
+            const patternType = Math.floor(rand() * 4);
+            drawShirtBase(dimensions, itemColor);
+            drawPattern(dimensions, patternType, patternColor, rand);
+            drawShirtOutline(dimensions);
+        } else {
+            const scale = 0.8 + rand() * 0.4;
+            drawPants(itemColor, patternColor, scale, rand);
+        }
 
         p.pop();
     }
@@ -300,6 +306,120 @@ export const clotheslineSketch = function (p) {
         p.stroke(0, 35);
         p.strokeWeight(1);
         drawShirtPath(dimensions);
+        p.pop();
+    }
+
+    function drawPants(baseColor, patternColor, scale, rand) {
+        p.push();
+        
+        // Draw base pants
+        p.fill(baseColor);
+        p.noStroke();
+        drawPantsPath(scale);
+
+        // Add patterns using clipping
+        const patternType = Math.floor(rand() * 4);
+        drawPantsPattern(scale, patternType, patternColor, rand);
+
+        // Draw outline
+        p.noFill();
+        p.stroke(0, 35);
+        p.strokeWeight(1);
+        drawPantsPath(scale);
+
+        p.pop();
+    }
+
+    function drawPantsPath(scale) {
+        p.beginShape();
+        p.vertex(-11 * scale, 112 * scale);
+        p.vertex(-43 * scale, 108 * scale);
+        p.vertex(-48 * scale, 3 * scale);
+        p.vertex(48 * scale, 0 * scale);
+        p.vertex(42 * scale, 106 * scale);
+        p.vertex(10 * scale, 110 * scale);
+        p.vertex(2 * scale, 30 * scale);
+        p.endShape(p.CLOSE);
+    }
+
+    function drawPantsPattern(scale, patternType, color, rand) {
+        const ctx = p.drawingContext;
+
+        ctx.save();
+
+        createPantsClipPath(scale);
+        ctx.clip();
+
+        switch (patternType) {
+            case 1:
+                drawPantsHorizontalStripes(scale, color);
+                break;
+
+            case 2:
+                drawPantsPolkaDots(scale, color, rand);
+                break;
+
+            case 3:
+                drawPantsDiagonalStripes(scale, color);
+                break;
+        }
+
+        ctx.restore();
+    }
+
+    function createPantsClipPath(scale) {
+        const ctx = p.drawingContext;
+
+        ctx.beginPath();
+        ctx.moveTo(-11 * scale, 112 * scale);
+        ctx.lineTo(-43 * scale, 108 * scale);
+        ctx.lineTo(-48 * scale, 3 * scale);
+        ctx.lineTo(48 * scale, 0 * scale);
+        ctx.lineTo(42 * scale, 106 * scale);
+        ctx.lineTo(10 * scale, 110 * scale);
+        ctx.lineTo(2 * scale, 30 * scale);
+        ctx.closePath();
+    }
+
+    function drawPantsHorizontalStripes(scale, color) {
+        p.push();
+        p.stroke(color);
+        p.strokeWeight(scale * 2);
+
+        for (let y = -20 * scale; y < 140 * scale; y += 20 * scale) {
+            p.line(-60 * scale, y, 60 * scale, y);
+        }
+
+        p.pop();
+    }
+
+    function drawPantsPolkaDots(scale, color, rand) {
+        p.push();
+        p.fill(color);
+        p.noStroke();
+
+        const numDots = 3 + Math.floor(rand() * 4);
+
+        for (let i = 0; i < numDots; i++) {
+            const x = -40 * scale + rand() * 80 * scale;
+            const y = 10 * scale + rand() * 100 * scale;
+            const diameter = scale * 8 + rand() * scale * 6;
+
+            p.circle(x, y, diameter);
+        }
+
+        p.pop();
+    }
+
+    function drawPantsDiagonalStripes(scale, color) {
+        p.push();
+        p.stroke(color);
+        p.strokeWeight(scale * 1.5);
+
+        for (let x = -100 * scale; x < 100 * scale; x += 15 * scale) {
+            p.line(x, -20 * scale, x + 150 * scale, 140 * scale);
+        }
+
         p.pop();
     }
 
