@@ -43,6 +43,14 @@ export const shapeDrawerSketch = function (p) {
                 p.pop();
             }
             p.endShape();
+
+            // Draw line preview to the next point
+            if (points.length > 0) {
+                const lastPoint = points[points.length - 1];
+                p.stroke(255, 0, 0); // Red line preview
+                p.strokeWeight(1);
+                p.line(lastPoint.x, lastPoint.y, p.mouseX - canvasSize.width / 2, p.mouseY - canvasSize.height / 2);
+            }
         }
 
         // Draw subtle UI buttons in top-left corner

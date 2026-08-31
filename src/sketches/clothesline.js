@@ -60,6 +60,19 @@ export const clotheslineSketch = function (p) {
                     bounds: { minX: -48 * s, maxX: 48 * s, minY: 0, maxY: 112 * s }
                 };
             }
+        },
+        {
+            name: 'shorts',
+            weight: 1, // 10% chance
+            generateMeta: (rand) => {
+                return {
+                    vertices: [
+                        [-57, -5], [-71, 72], [-13, 80], [-4, 18],
+                        [16, 79], [67, 72], [51, -10]
+                    ],
+                    bounds: { minX: -71, maxX: 67, minY: -5, maxY: 80 }
+                };
+            }
         }
     ];
 
