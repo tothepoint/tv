@@ -185,12 +185,131 @@ export const clotheslineSketch = function (p) {
                     }
                 };
             }
+        },
+        {
+            name: 'skirt',
+            weight: RARITY.COMMON,
+            generateMeta: (rand) => {
+                const s = 0.8 + rand() * 0.4; // Scale factor for length/width
+                return {
+                    vertices: [
+                        [-22 * s, 0],         // Top left waist
+                        [22 * s, 0],          // Top right waist
+                        [55 * s, 70 * s],     // Bottom right flare
+                        [40 * s, 73 * s],     // Hem wave
+                        [0, 70 * s],          // Hem middle
+                        [-40 * s, 73 * s],    // Hem wave
+                        [-55 * s, 70 * s]     // Bottom left flare
+                    ],
+                    bounds: { minX: -55 * s, maxX: 55 * s, minY: 0, maxY: 73 * s }
+                };
+            }
+        },
+        {
+            name: 'tankTop',
+            weight: RARITY.UNCOMMON,
+            generateMeta: (rand) => {
+                const s = 0.9 + rand() * 0.2;
+                return {
+                    vertices: [
+                        [-20 * s, 0],         // Left strap top outer
+                        [-10 * s, 0],         // Left strap top inner
+                        [0, 20 * s],          // Deep scoop neck
+                        [10 * s, 0],          // Right strap top inner
+                        [20 * s, 0],          // Right strap top outer
+                        [30 * s, 35 * s],     // Right armpit
+                        [28 * s, 85 * s],     // Bottom right
+                        [-28 * s, 85 * s],    // Bottom left
+                        [-30 * s, 35 * s]     // Left armpit
+                    ],
+                    bounds: { minX: -30 * s, maxX: 30 * s, minY: 0, maxY: 85 * s }
+                };
+            }
+        },
+        {
+            name: 'scarf',
+            weight: RARITY.RARE,
+            generateMeta: (rand) => {
+                const s = 0.9 + rand() * 0.3; // Random length
+                return {
+                    vertices: [
+                        [-12 * s, 0],
+                        [12 * s, 0],
+                        [12 * s, 110 * s],
+                        [5 * s, 105 * s],     // Tassel point
+                        [0, 112 * s],         // Tassel point
+                        [-5 * s, 105 * s],    // Tassel point
+                        [-12 * s, 110 * s]
+                    ],
+                    bounds: { minX: -12 * s, maxX: 12 * s, minY: 0, maxY: 112 * s }
+                };
+            }
+        },
+        {
+            name: 'towel',
+            weight: RARITY.COMMON,
+            generateMeta: (rand) => {
+                const s = 0.8 + rand() * 0.4; // Varies between hand towel and bath towel sizes
+                return {
+                    vertices: [
+                        [-40 * s, 0],
+                        [40 * s, 0],
+                        [38 * s, 100 * s],    // Slightly tapered bottom
+                        [0, 104 * s],         // Natural fabric sag in the middle
+                        [-38 * s, 100 * s]    // Slightly tapered bottom
+                    ],
+                    bounds: { minX: -40 * s, maxX: 40 * s, minY: 0, maxY: 104 * s }
+                };
+            }
+        },
+        {
+            name: 'bra',
+            weight: RARITY.UNCOMMON,
+            generateMeta: (rand) => {
+                const s = 0.8 + rand() * 0.2;
+
+                const getCurve = (p0, p1, p2, p3, segments = 6) => {
+                    let pts = [];
+                    for (let i = 1; i <= segments; i++) {
+                        let t = i / segments, u = 1 - t;
+                        pts.push([
+                            (u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0]) * s,
+                            (u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]) * s
+                        ]);
+                    }
+                    return pts;
+                };
+
+                return {
+                    vertices: [
+                        [-26 * s, 0], // Left strap outer
+                        [-22 * s, 0], // Left strap inner
+
+                        // Left inner strap curve down to center gore
+                        ...getCurve([-22, 0], [-18, 15], [-10, 22], [0, 20]),
+                        // Center gore up to right inner strap
+                        ...getCurve([0, 20], [10, 22], [18, 15], [22, 0]),
+
+                        [26 * s, 0], // Right strap outer
+
+                        // Right strap curve down to right cup outer edge
+                        ...getCurve([26, 0], [28, 15], [35, 20], [38, 28]),
+                        // Right cup bottom sweep to center gore
+                        ...getCurve([38, 28], [35, 46], [15, 46], [0, 32]),
+                        // Left cup bottom sweep from gore to outer edge
+                        ...getCurve([0, 32], [-15, 46], [-35, 46], [-38, 28]),
+                        // Left cup outer edge curve up to left strap
+                        ...getCurve([-38, 28], [-35, 20], [-28, 15], [-26, 0])
+                    ],
+                    bounds: { minX: -38 * s, maxX: 38 * s, minY: 0, maxY: 42 * s }
+                };
+            }
         }
     ];
 
 
     // LIMIT CLOTHING_TYPES TO ONLY DRESS FOR TESTING
-    // let keepOnly = 'underwear'; 
+    // let keepOnly = 'overalls'; // Change this to test different clothing types
     // CLOTHING_TYPES = CLOTHING_TYPES.filter(item => item.name === keepOnly);
 
     const PATTERN_TYPES = [
