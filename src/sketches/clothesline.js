@@ -588,10 +588,21 @@ export const clotheslineSketch = function (p) {
 
         if (rand() <= 0.2) return;
 
-        // Select colors
-        const colorIndex = Math.floor(rand() * PALETTE.length);
-        const itemColor = PALETTE[colorIndex];
-        const patternColor = PALETTE[getDifferentColorIndex(rand, colorIndex)];
+        let colorIndex;
+        let itemColor;
+        let patternColor;
+
+        let shouldSelectRandomColors = Math.floor(rand() * 10) < 8; // 80% chance to select random colors, 20% chance to use default colors
+
+        if (shouldSelectRandomColors) {
+            itemColor = generateRandomColor(rand);
+            patternColor = generateRandomColor(rand);
+        } else {
+            // Select colors
+            colorIndex = Math.floor(rand() * PALETTE.length);
+            itemColor = PALETTE[colorIndex];
+            patternColor = PALETTE[getDifferentColorIndex(rand, colorIndex)];
+        }
 
         // Select Item and Pattern
         const itemConfig = getWeightedRandom(CLOTHING_TYPES, rand);
@@ -660,6 +671,14 @@ export const clotheslineSketch = function (p) {
     // ==========================================
     // UTILS & ENVIRONMENT
     // ==========================================
+
+    function generateRandomColor(rand) {
+        const hue = Math.floor(rand() * 360); // 0-359 degrees around the color wheel
+        const saturation = 50 + Math.floor(rand() * 40); // 50-90% (keeps it colorful, avoiding gray)
+        const lightness = 35 + Math.floor(rand() * 45); // 35-80% (avoids pure black or pure white)
+
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
 
     function getWeightedRandom(items, rand) {
         const totalWeight = items.reduce((sum, item) => sum + (item.weight || 1), 0);
