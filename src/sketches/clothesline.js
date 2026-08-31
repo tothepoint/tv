@@ -23,14 +23,21 @@ export const clotheslineSketch = function (p) {
     const PEG_COLOR = '#3A2820';
     const HANGER_COLOR = '#E0E0E0';
 
+    const RARITY = {
+        COMMON: 50,    // Base items you see constantly
+        UNCOMMON: 25,  // Regular items, but less frequent
+        RARE: 10,      // Occasional items
+        LEGENDARY: 2   // Very rare treats
+    };
+
     // ==========================================
     // EXTENSION REGISTRIES
     // ==========================================
 
-    const CLOTHING_TYPES = [
+    let CLOTHING_TYPES = [
         {
             name: 'shirt',
-            weight: 7, // 70% chance relative to pants
+            weight: RARITY.COMMON,
             generateMeta: (rand) => {
                 const radius = 18 + rand() * 14;
                 const w = radius * 1.5;
@@ -48,7 +55,7 @@ export const clotheslineSketch = function (p) {
         },
         {
             name: 'pants',
-            weight: 3, // 30% chance
+            weight: RARITY.UNCOMMON,
             generateMeta: (rand) => {
                 const s = 0.8 + rand() * 0.4;
                 return {
@@ -63,7 +70,7 @@ export const clotheslineSketch = function (p) {
         },
         {
             name: 'shorts',
-            weight: 1, // 10% chance
+            weight: RARITY.LEGENDARY,
             generateMeta: (rand) => {
                 return {
                     vertices: [
@@ -73,8 +80,118 @@ export const clotheslineSketch = function (p) {
                     bounds: { minX: -71, maxX: 67, minY: -5, maxY: 80 }
                 };
             }
+        },
+        {
+            name: 'sock',
+            weight: RARITY.RARE,
+            generateMeta: (rand) => {
+                const s = 0.45 + rand() * 0.15; // Random size scaling
+                return {
+                    vertices: [
+                        [-20 * s, -9 * s],
+                        [-18 * s, 41 * s],
+                        [-22 * s, 78 * s],
+                        [-28 * s, 86 * s],
+                        [-60 * s, 91 * s],
+                        [-84 * s, 100 * s],
+                        [-90 * s, 113 * s],
+                        [-90 * s, 126 * s],
+                        [-84 * s, 142 * s],
+                        [-66 * s, 149 * s],
+                        [-19 * s, 146 * s],
+                        [18 * s, 143 * s],
+                        [44 * s, 134 * s],
+                        [53 * s, 122 * s],
+                        [58 * s, 94 * s],
+                        [49 * s, 59 * s],
+                        [45 * s, 18 * s],
+                        [44 * s, -10 * s]
+                    ],
+                    bounds: {
+                        minX: -90 * s,
+                        maxX: 58 * s,
+                        minY: -10 * s,
+                        maxY: 149 * s
+                    }
+                };
+            }
+        },
+        {
+            name: 'dress',
+            weight: RARITY.UNCOMMON,
+            generateMeta: (rand) => {
+                const s = 0.7 + rand() * 0.3; // Scale factor for size variation
+                const yShift = 40; // Shifts top straps up to y = 0
+                return {
+                    vertices: [
+                        [-26 * s, (-37 + yShift) * s],
+                        [-31 * s, (-21 + yShift) * s],
+                        [-31 * s, (-7 + yShift) * s],
+                        [-29 * s, (1 + yShift) * s],
+                        [-39 * s, (27 + yShift) * s],
+                        [-47 * s, (57 + yShift) * s],
+                        [-50 * s, (77 + yShift) * s],
+                        [-54 * s, (93 + yShift) * s],
+                        [-41 * s, (99 + yShift) * s],
+                        [-22 * s, (103 + yShift) * s],
+                        [4 * s, (103 + yShift) * s],
+                        [34 * s, (104 + yShift) * s],
+                        [47 * s, (101 + yShift) * s],
+                        [42 * s, (79 + yShift) * s],
+                        [35 * s, (53 + yShift) * s],
+                        [28 * s, (22 + yShift) * s],
+                        [21 * s, (1 + yShift) * s],
+                        [24 * s, (-10 + yShift) * s],
+                        [26 * s, (-26 + yShift) * s],
+                        [19 * s, (-40 + yShift) * s],
+                        [6 * s, (-26 + yShift) * s],
+                        [-5 * s, (-22 + yShift) * s],
+                        [-16 * s, (-28 + yShift) * s],
+                        [-23 * s, (-35 + yShift) * s]
+                    ],
+                    bounds: {
+                        minX: -54 * s,
+                        maxX: 47 * s,
+                        minY: (-40 + yShift) * s,
+                        maxY: (104 + yShift) * s
+                    }
+                };
+            }
+        },
+        {
+            name: 'underwear',
+            weight: RARITY.RARE,
+            generateMeta: (rand) => {
+                const s = 0.7 + rand() * 0.3; // Scale factor for slight size variation
+                const yShift = 17; // Shifts top waistband (-17) up to y = 0
+                return {
+                    vertices: [
+                        [-66 * s, (-14 + yShift) * s],
+                        [-68 * s, (12 + yShift) * s],
+                        [-46 * s, (24 + yShift) * s],
+                        [-28 * s, (40 + yShift) * s],
+                        [-15 * s, (58 + yShift) * s],
+                        [14 * s, (58 + yShift) * s],
+                        [24 * s, (39 + yShift) * s],
+                        [44 * s, (21 + yShift) * s],
+                        [53 * s, (14 + yShift) * s],
+                        [52 * s, (-17 + yShift) * s]
+                    ],
+                    bounds: {
+                        minX: -68 * s,
+                        maxX: 53 * s,
+                        minY: 0,
+                        maxY: (58 + yShift) * s
+                    }
+                };
+            }
         }
     ];
+
+
+    // LIMIT CLOTHING_TYPES TO ONLY DRESS FOR TESTING
+    // let keepOnly = 'underwear'; 
+    // CLOTHING_TYPES = CLOTHING_TYPES.filter(item => item.name === keepOnly);
 
     const PATTERN_TYPES = [
         {
@@ -122,6 +239,184 @@ export const clotheslineSketch = function (p) {
                 p.strokeWeight(h * 0.08);
                 for (let x = bounds.minX - h; x < bounds.maxX + h; x += w * 0.3) {
                     p.line(x, bounds.minY, x + h, bounds.maxY);
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'verticalStripes',
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                p.push();
+                p.stroke(color);
+                p.strokeWeight(w * 0.1);
+                for (let x = bounds.minX + w * 0.15; x < bounds.maxX; x += w * 0.25) {
+                    p.line(x, bounds.minY - 10, x, bounds.maxY + 10);
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'checkered',
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                const tileSize = w * 0.25;
+                p.push();
+                p.fill(color);
+                p.noStroke();
+                let row = 0;
+                for (let y = bounds.minY - tileSize; y < bounds.maxY; y += tileSize) {
+                    let col = 0;
+                    for (let x = bounds.minX - tileSize; x < bounds.maxX; x += tileSize) {
+                        if ((row + col) % 2 === 0) {
+                            p.square(x, y, tileSize);
+                        }
+                        col++;
+                    }
+                    row++;
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'grid', // Gingham / Plaid style
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                p.push();
+                p.stroke(color);
+                p.strokeWeight(w * 0.05);
+                const step = w * 0.2;
+
+                // Vertical lines
+                for (let x = bounds.minX + step; x < bounds.maxX; x += step) {
+                    p.line(x, bounds.minY - 10, x, bounds.maxY + 10);
+                }
+                // Horizontal lines
+                for (let y = bounds.minY + step; y < bounds.maxY; y += step) {
+                    p.line(bounds.minX - 10, y, bounds.maxX + 10, y);
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'chevron', // Zig-Zags
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                const step = w * 0.25;
+                p.push();
+                p.stroke(color);
+                p.strokeWeight(w * 0.08);
+                p.noFill();
+                p.strokeJoin(p.MITER);
+
+                for (let y = bounds.minY - step; y < bounds.maxY + step; y += step * 1.5) {
+                    p.beginShape();
+                    let up = true;
+                    for (let x = bounds.minX - step; x < bounds.maxX + step; x += step) {
+                        p.vertex(x, y + (up ? step : 0));
+                        up = !up;
+                    }
+                    p.endShape();
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'sprinkles', // 90s arcade carpet / confetti style
+            draw: (p, bounds, color, rand) => {
+                const w = bounds.maxX - bounds.minX;
+                const h = bounds.maxY - bounds.minY;
+                const numSprinkles = 15 + Math.floor(rand() * 20);
+
+                p.push();
+                p.stroke(color);
+                p.strokeWeight(w * 0.05);
+                p.strokeCap(p.ROUND);
+
+                for (let i = 0; i < numSprinkles; i++) {
+                    const cx = bounds.minX + rand() * w;
+                    const cy = bounds.minY + rand() * h;
+                    const angle = rand() * p.TWO_PI;
+                    const len = w * 0.12;
+
+                    p.line(
+                        cx - Math.cos(angle) * len, cy - Math.sin(angle) * len,
+                        cx + Math.cos(angle) * len, cy + Math.sin(angle) * len
+                    );
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'waves', // Sine wave pattern
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                const step = 4; // detail of the curve
+                p.push();
+                p.stroke(color);
+                p.strokeWeight(w * 0.06);
+                p.noFill();
+
+                for (let y = bounds.minY; y < bounds.maxY; y += w * 0.25) {
+                    p.beginShape();
+                    for (let x = bounds.minX - w * 0.2; x < bounds.maxX + w * 0.2; x += step) {
+                        // Use x coordinate to drive the sine wave
+                        const yOffset = Math.sin((x - bounds.minX) * 0.15) * (w * 0.1);
+                        p.vertex(x, y + yOffset);
+                    }
+                    p.endShape();
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'argyle', // Intersecting Diamonds
+            draw: (p, bounds, color) => {
+                const w = bounds.maxX - bounds.minX;
+                const tileW = w * 0.4;
+                const tileH = tileW * 1.5;
+                p.push();
+                p.fill(color);
+                p.noStroke();
+
+                // Overdraw slightly outside the bounding box so the edges clip nicely
+                for (let y = bounds.minY - tileH; y < bounds.maxY; y += tileH) {
+                    for (let x = bounds.minX - tileW; x < bounds.maxX; x += tileW) {
+                        p.quad(
+                            x + tileW / 2, y,
+                            x + tileW, y + tileH / 2,
+                            x + tileW / 2, y + tileH,
+                            x, y + tileH / 2
+                        );
+                    }
+                }
+                p.pop();
+            }
+        },
+        {
+            name: 'cowPrint', // Organic, randomly generated blobs
+            draw: (p, bounds, color, rand) => {
+                const w = bounds.maxX - bounds.minX;
+                const h = bounds.maxY - bounds.minY;
+                const numBlobs = 3 + Math.floor(rand() * 4);
+
+                p.push();
+                p.fill(color);
+                p.noStroke();
+
+                for (let i = 0; i < numBlobs; i++) {
+                    const cx = bounds.minX + rand() * w;
+                    const cy = bounds.minY + rand() * h;
+                    const baseRadius = w * 0.15 + rand() * w * 0.2;
+
+                    p.beginShape();
+                    // Draw a noisy, imperfect circle
+                    for (let a = 0; a < p.TWO_PI; a += 0.8) {
+                        // Vary the radius at each point of the circle
+                        const rOffset = baseRadius * (0.6 + rand() * 0.6);
+                        p.vertex(cx + Math.cos(a) * rOffset, cy + Math.sin(a) * rOffset);
+                    }
+                    p.endShape(p.CLOSE);
                 }
                 p.pop();
             }
